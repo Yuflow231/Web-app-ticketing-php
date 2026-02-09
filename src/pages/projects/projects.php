@@ -4,62 +4,20 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Projects - Ticketing App</title>
-    <link rel="stylesheet" href="/src/assets/css/main.css">
+    <link rel="stylesheet" href="../../assets/css/main.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/js/all.min.js" defer></script>
-    <script type="module" src="/src/assets/js/side-bar.js"></script>
+    <script type="module" src="../../assets/js/side-bar.js"></script>
 </head>
 <body>
     <!-- Navigation Bar -->
-    <nav class="navigation">
-        <header class="top-bar">
-            <div class="menu-bar">
-                <span class="hamburger"><i class="fa-solid fa-bars"></i></span>
-                <span>| Ticketing App</span>
-            </div>
-            <div class="user-profile-header">
-                <a href="/src/pages/profile.html" class="user-profile-inline">
-                    <span class="username" data-type="first-name">User</span>
-                    <span class="username" data-type="last-name">Name</span>
-                    <!-- placeholder using my YouTube profile pic -->
-                    <img src="https://yt3.ggpht.com/pz97Hxe-gW4DR1-S4HmoZopwKXppAHPajMDtCaSSM-3HNV31wECJmegkZAohyEh7qAbCNQAHUg=s176-c-k-c0x00ffffff-no-rj" alt="User Profile" class="profile-pic" >
-                </a>
-            </div>
-        </header>
-
-        <!-- Side Navigation Bar -->
-        <div class="side-nav">
-            <div class="top-side">
-                <a href="/src/pages/dashBoard.html">
-                    <span class="icon"><i class="fa-solid fa-chart-line"></i></span>
-                    <span class="text">Dashboard</span>
-                </a>
-                <a href="/src/pages/projects/projects.html" class="active">
-                    <span class="icon"><i class="fa-solid fa-diagram-project"></i></span>
-                    <span class="text">Projects</span>
-                </a>
-                <a href="/src/pages/tickets/tickets.html">
-                    <span class="icon"><i class="fa-solid fa-ticket"></i></span>
-                    <span class="text">Tickets</span>
-                </a>
-                <a href="/src/pages/profile.html">
-                    <span class="icon"><i class="fa-solid fa-user"></i></span>
-                    <span class="text">Profile</span>
-                </a>
-            </div>
-
-            <a href="/index.html">
-                <span class="icon"><i class="fa-solid fa-right-from-bracket"></i></span>
-                <span class="text">Logout</span>
-            </a>
-        </div>
-    </nav>
+    <?php require_once("../../assets/php/side-nav-component.php"); ?>
 
     <!-- Main Content -->
     <main class="main-content">
         <header class="page-header">
             <div class="page-header-line">
                 <h2>My projects</h2>
-                <a href="/src/pages/projects/project-creation.html">
+                <a href="./project-creation.php<?= $debug ?>">
                     <button type="button" class="btn">
                         <i class="fa-solid fa-plus"></i>
                         Create project
@@ -126,7 +84,7 @@
                             </div>
                         </td>
                         <td data-label="Creation date">52/02/1996</td>
-                        <td data-label="Actions"><a href="project-details.html" class="icon"><i class="fa-solid fa-arrow-up-right-from-square"></i></a></td>
+                        <td data-label="Actions"><a href="./project-details.php<?= $debug ?>" class="icon"><i class="fa-solid fa-arrow-up-right-from-square"></i></a></td>
                     </tr>
                     <tr>
                         <td data-label="ID">#102</td>
@@ -149,7 +107,7 @@
                             </div>
                         </td>
                         <td data-label="Creation date">30/01/2026</td>
-                        <td data-label="Actions"><a href="project-details.html" class="icon"><i class="fa-solid fa-arrow-up-right-from-square"></i></a></td>
+                        <td data-label="Actions"><a href="./project-details.php<?= $debug ?>" class="icon"><i class="fa-solid fa-arrow-up-right-from-square"></i></a></td>
                     </tr>
                     <tr>
                         <td data-label="ID">#102</td>
@@ -172,7 +130,7 @@
                             </div>
                         </td>
                         <td data-label="Creation date">30/01/2026</td>
-                        <td data-label="Actions"><a href="project-details.html" class="icon"><i class="fa-solid fa-arrow-up-right-from-square"></i></a></td>
+                        <td data-label="Actions"><a href="./project-details.php<?= $debug ?>" class="icon"><i class="fa-solid fa-arrow-up-right-from-square"></i></a></td>
                     </tr>
                     <tr>
                         <td data-label="ID">#102</td>
@@ -195,7 +153,7 @@
                             </div>
                         </td>
                         <td data-label="Creation date">30/01/2026</td>
-                        <td data-label="Actions"><a href="project-details.html" class="icon"><i class="fa-solid fa-arrow-up-right-from-square"></i></a></td>
+                        <td data-label="Actions"><a href="project-details.php<?= $debug ?>" class="icon"><i class="fa-solid fa-arrow-up-right-from-square"></i></a></td>
                     </tr>
                     <tr>
                         <td data-label="ID">#102</td>
@@ -218,7 +176,7 @@
                             </div>
                         </td>
                         <td data-label="Creation date">30/01/2026</td>
-                        <td data-label="Actions"><a href="project-details.html" class="icon"><i class="fa-solid fa-arrow-up-right-from-square"></i></a></td>
+                        <td data-label="Actions"><a href="project-details.php<?= $debug ?>" class="icon"><i class="fa-solid fa-arrow-up-right-from-square"></i></a></td>
                     </tr>
                     <tr>
                         <td data-label="ID">#102</td>
@@ -241,7 +199,7 @@
                             </div>
                         </td>
                         <td data-label="Creation date">30/01/2026</td>
-                        <td data-label="Actions"><a href="project-details.html" class="icon"><i class="fa-solid fa-arrow-up-right-from-square"></i></a></td>
+                        <td data-label="Actions"><a href="project-details.php<?= $debug ?>" class="icon"><i class="fa-solid fa-arrow-up-right-from-square"></i></a></td>
                     </tr>
                     <tr>
                         <td data-label="ID">#102</td>
@@ -264,7 +222,7 @@
                             </div>
                         </td>
                         <td data-label="Creation date">30/01/2026</td>
-                        <td data-label="Actions"><a href="project-details.html" class="icon"><i class="fa-solid fa-arrow-up-right-from-square"></i></a></td>
+                        <td data-label="Actions"><a href="project-details.php<?= $debug ?>" class="icon"><i class="fa-solid fa-arrow-up-right-from-square"></i></a></td>
                     </tr>
                     </tbody>
                 </table>

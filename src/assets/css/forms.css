@@ -136,3 +136,21 @@ textarea {
     cursor: pointer;
     color: #666;
 }
+
+
+input[type="checkbox"] {
+    appearance: none;
+    width: 5px;
+    border: 2px solid #ddd;
+    border-radius: var(--radius-sm);
+    cursor: pointer;
+    position: relative;
+    transition: all var(--transition-fast);
+}
+
+input[type="checkbox"]:checked {
+    background-color: var(--primary-color);
+    border-color: var(--primary-color);
+    content: '✓';
+    color: white;
+}

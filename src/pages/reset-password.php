@@ -1,10 +1,13 @@
+<?php
+    $debug = isset($_GET["debug"]) ? "?debug=1" : "";
+?>
 <!DOCTYPE html>
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Reset password - Ticketing App</title>
-    <link rel="stylesheet" href="/src/assets/css/main.css">
+    <link rel="stylesheet" href="../../src/assets/css/main.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/js/all.min.js" defer></script>
 </head>
 <body>
@@ -25,14 +28,14 @@
             </div>
 
             <div class="centered" style="margin-top: var(--spacing-md);">
-                <button onclick="location.href = '/index.html'" type="button" class="btn btn--outline">Back to login</button>
+                <button onclick="location.href = '../../index.php<?= $debug ?>'" type="button" class="btn btn--outline">Back to login</button>
             </div>
         </form>
     </div>
 </body>
 <script type="module">
     // Set as module to allow imports
-    import * as FormVerifier from "/src/assets/js/form-verifs.js";
+    import * as FormVerifier from "../../src/assets/js/form-verifs.js";
 
     // Get references to form's field
     let formMail = document.getElementById("form-email");

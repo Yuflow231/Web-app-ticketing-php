@@ -1,0 +1,8 @@
+.debug-element{
+    position: fixed;
+    padding: 0.25rem;
+    z-index:2000;
+    color:white;
+    background-color: rgba(0, 0, 0, 0.8);
+    pointer-events: none;
+}

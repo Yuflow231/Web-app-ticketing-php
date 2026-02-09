@@ -1,10 +1,13 @@
+<?php
+    $debug = isset($_GET["debug"]) ? "?debug=1" : "";
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login - Ticketing App</title>
-    <link rel="stylesheet" href="/src/assets/css/main.css">
+    <link rel="stylesheet" href="./src/assets/css/main.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/js/all.min.js" defer></script>
 </head>
 <body>
@@ -28,13 +31,8 @@
             </div>
 
             <div class="password">
-                <a href="/src/pages/reset-password.html">Forgot password ?</a>
+                <a href="./src/pages/reset-password.php">Forgot password ?</a>
             </div>
-
-            <!--
-            <div class="centered">
-                <a href="src/pages/dashBoard.html"><button type="button" class="btn">Login</button></a>
-            </div>-->
 
             <div class="centered">
                 <button class="btn" id="actions" type="submit">
@@ -47,8 +45,8 @@
 </body>
 <script type="module">
     // Set as module to allow imports
-    import * as FormVerifier from "/src/assets/js/form-verifs.js";
-    import * as LangHandler from "/src/assets/js/language-handler.js";
+    import * as FormVerifier from "/Web-app-ticketing-php/src/assets/js/form-verifs.js";
+    import * as LangHandler from "./src/assets/js/language-handler.js";
     console.log("The current language is", LangHandler.getLanguage());
 
 
@@ -82,7 +80,7 @@
         // if everything checks out
         if(formValidation){
             canPress = false;
-            FormVerifier.validateForm("Connecting ...", "/src/pages/dashBoard.html");
+            FormVerifier.validateForm("Connecting ...", "./src/pages/dashBoard.php<?= $debug ?>");
         }
     }
 
