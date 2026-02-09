@@ -1,0 +1,799 @@
+:root {
+    /* Layout Dimensions */
+    --side-nav-width: 12rem;
+    --top-nav-height: 4rem;
+
+    /* Colors */
+    --primary: #0E94D4;
+    --primary-dark: #285991;
+    --primary-hover: #2C7AB9;
+    --bg-main: #EEEEEE;
+    --bg-card: #FFFFFF;
+    --text-main: #333333;
+    --text-muted: #888888;
+    --return: #f00000;
+    --return-hover: #C91313;
+
+    /* Status Colors */
+    --status-new: #3498DB;
+    --status-progress: #F39C12;
+    --status-done: #27AE60;
+
+    /* Shadow */
+    --shadow: #00000019;
+}
+
+* {
+    font-family: Verdana, sans-serif;
+}
+
+a{
+    text-decoration: none;
+}
+
+h1, h2 {
+    color: var(--text-main);
+}
+
+body {
+    background-color: var(--bg-main);
+    display: flex;
+    margin: 0;
+}
+
+li{
+    margin-bottom: 0.5rem;
+}
+/* Button styles */
+.btn {
+    background-color: var(--primary);
+    color: white;
+    border: none;
+    padding: 0.5rem 1rem;
+    border-radius: 4px;
+    cursor: pointer;
+    text-transform: uppercase;
+    transition: 0.3s ease;
+}
+
+.btn:hover {
+    background-color: var(--primary-hover);
+    translate: 0 -0.2rem;
+    box-shadow: 0 0.2rem 0 #00000040;
+}
+
+.centered{
+    margin: auto;
+    text-align: center;
+}
+
+.password{
+    color: var(--primary);
+    font-size: 0.8rem;
+    margin-bottom: 0.5rem;
+}
+
+/*-------------------------------*/
+/*|        Page_structure       |*/
+/*-------------------------------*/
+
+/*-------------Navigation stuff--------------*/
+.navigation{
+    z-index: 1;
+}
+.top-bar{
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: var(--top-nav-height);
+    background: #323233;
+    box-shadow: 1px 0 2px rgba(0,0,0,0.125);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.top-bar p,
+.menu-bar span,
+.top-bar a {
+    text-transform: uppercase;
+    color: white;
+    margin: 2rem 16px;
+    vertical-align: middle;
+}
+
+.menu-bar span{
+    margin: 0;
+}
+.top-bar .hamburger {
+    font-size: 2rem;
+    margin: 0 0 0 8px;
+    transition: 0.3s ease;
+}
+.top-bar .hamburger:hover {
+    display: inline-block;
+    transform: scale(1.15);
+}
+
+/* Container for the name and photo */
+.user-profile-header {
+    display: flex;
+    align-items: center;
+    color: white;
+}
+
+.username {
+    font-size: 0.9rem;
+    font-weight: bold;
+    text-transform: none; /* Keeps the name from being all caps */
+    vertical-align: middle;
+}
+
+.profile-pic {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%; /* Makes the image circular */
+    border: 2px solid var(--primary); /* Uses your existing blue */
+    object-fit: cover;
+    vertical-align: middle;
+}
+
+.user-profile-header a{
+    transition: 0.3s ease;
+}
+.user-profile-header a:hover{
+    transform: scale(1.02);
+}
+/*---------------------*/
+.side-nav {
+    position: fixed;
+    top: var(--top-nav-height);
+    left: 0;
+    width: var(--side-nav-width);
+    height: calc(100% - var(--top-nav-height));
+    background: #052f42;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    transition: 0.3s ease;
+}
+
+.side-nav a{
+    padding: 1rem;
+    border-bottom: 2px solid #024667;
+    color: #0e94d4;
+    transition: 0.3s ease;
+    overflow: hidden;
+    white-space: nowrap;
+}
+
+.side-nav a .icon{
+    font-size: 18px;
+    color: white;
+    vertical-align: middle;
+}
+
+.side-nav a .text{
+    margin-left: 18px;
+    color: #fff;
+    font-family: sans-serif;
+    font-size: 18px;
+    letter-spacing: 2px;
+    vertical-align: middle;
+}
+
+.side-nav a#active {
+    background: var(--primary-dark);
+    color: #FFFFFF;
+}
+
+.side-nav a:hover,
+.side-nav a:hover#active {
+    background: var(--primary-hover);
+    color: #FFFFFF;
+}
+
+.side-nav a .text {
+    display: inline-block; /* Required for transform to work on spans */
+    transition: 0.3s ease;
+}
+
+.side-nav a:hover .text {
+    transform: scale(1.1);
+}
+
+.side-nav.collapsed .text{
+    display: none;
+}
+
+.top-side {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+}
+
+/* Separator for logout */
+.side-nav > a:last-child {
+    border-bottom: none;
+    border-top: 2px solid #024667;
+}
+
+.side-nav > a:last-child:hover {
+    background: var(--return-hover);
+    border-top: 2px solid #7a0808;
+}
+
+/*--------page elements-------*/
+.main-content {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    margin-left: var(--side-nav-width);
+    margin-top: var(--top-nav-height);
+    padding: 1rem 2rem;
+    width: calc(100% - var(--side-nav-width));
+    box-sizing: border-box;
+    transition: 0.3s ease;
+}
+
+.page-header{
+    display: flex;
+    flex-direction: column;
+}
+
+.page-header-line{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    margin-bottom: 0.5rem;
+}
+
+
+.progress-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.progress-percentage {
+    font-size: 10px;
+    font-weight: bold;
+    align-self: center;
+    color: #333333;
+    margin-left: 0.5rem;
+}
+
+.progress-bar {
+    width: 75%;
+    height: 0.75rem;
+    background-color: #e0e0e0;
+    border-radius: 8px;
+    overflow: hidden;
+    position: relative;
+}
+
+.progress-fill {
+    height: 100%;
+    background-color: #0E94D4;
+    border-radius: 8px 0 0 8px;
+    transition: width 0.3s ease-in-out;
+}
+
+
+/*-------- Modern Table Styles ----------*/
+
+.table-card {
+    background-color: var(--bg-card);
+    border-radius: 12px;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+    margin: 1rem 0;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    font-family: 'Verdana', sans-serif;
+}
+
+/* Header Styling */
+table th {
+    background-color: #285991;
+    color: #FFFFFF;
+    text-align: left;
+    padding: 1.25rem 1rem;
+    font-size: 1.1rem;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+}
+
+/* Cell Styling */
+table td {
+    padding: 1.25rem 1rem;
+    color: #333333;
+    font-size: 1rem;
+}
+
+table tbody tr:nth-child(even) {
+    background-color: #f5f5f5;
+}
+
+table tbody tr:hover {
+    background-color: #e9e9ff;
+    transition: 0.2s ease;
+}
+
+/* Remove border from last row */
+table tbody tr:last-child td {
+    border-bottom: none;
+}
+
+table a.icon{
+    font-size: 18px;
+    color: var(--primary);
+    vertical-align: middle;
+}
+
+.table-btns {
+    margin-left: 1rem;
+}
+
+.filter{
+    display: flex;
+    align-items: center;
+    margin-bottom: 0.5rem;
+}
+
+.filter label{
+    margin-right: 1rem;
+    flex: 1;
+}
+
+.filter input,
+.filter select{
+    margin: 0;
+}
+
+/*-------------------------------*/
+/*|      Form General Styles    |*/
+/*-------------------------------*/
+form {
+    max-width: 100%;
+    margin: 1rem;
+    padding: 1.5rem 2rem;
+    background-color: var(--bg-card);
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    box-sizing: border-box;
+}
+
+form label {
+    font-size: 1rem;
+    font-weight: bold;
+    margin-bottom: 0.5rem;
+    display: block;
+    color: #333333FF;
+}
+
+form input, form textarea, form select, select, input {
+    width: 100%;
+    padding: 0.5rem;
+    margin-bottom: 1rem;
+    border: 1px solid #CCCCCC;
+    border-radius: 4px;
+    font-size: 1rem;
+    box-sizing: border-box;
+}
+
+form textarea {
+    resize: none;
+}
+
+form input:focus, form textarea:focus, form select:focus,
+select:focus, input:focus {
+    border-color: #007BFF;
+    outline: none;
+    box-shadow: 0 0 4px rgba(0, 123, 255, 0.5);
+}
+
+/*-------------------------------*/
+/*|      Form Layout Styles     |*/
+/*-------------------------------*/
+.two-elements-line {
+    display: flex;
+    justify-content: space-evenly;
+    gap: 1rem;
+    flex-wrap: wrap;
+}
+
+.form-item {
+    flex: 1;
+}
+
+.form-item-stacked{
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1;
+}
+
+/*--------file import----------*/
+form input[type="file"] {
+    padding: 0.5rem;
+    border: 1px solid #CCCCCC;
+    border-radius: 4px;
+    font-size: 1rem;
+    box-sizing: border-box;
+    cursor: pointer;
+}
+
+#drop-zone {
+    border: 2px dashed #a2a2a2;
+    border-radius: 8px;
+    padding: 1rem;
+    text-align: center;
+    cursor: pointer;
+    background-color: #f3f3f3;
+    transition: 0.3s ease;
+}
+
+#drop-zone:hover {
+    background-color: #e8e8e8;
+    border-color: #626262;
+}
+
+#drop-zone.dragover {
+    background-color: #e0f0ff;
+    border-color: #0E94D4;
+}
+
+.removeBtn{
+    margin-left: 0.5rem;
+    background-color: var(--return);
+    border-radius: 0.5rem;
+    color: #FFFFFF;
+    border: none;
+    padding: 0.3rem 0.75rem;
+    transition: 0.3s ease;
+}
+
+
+.removeBtn:hover{
+    background-color: var(--return-hover);
+    color: #efefef;
+    transform: scale(1.1);
+}
+
+#creation-form{
+    max-width: 55rem;
+}
+
+/*-------------------------------*/
+/*|        Dashboard Styles      |*/
+/*-------------------------------*/
+.card{
+    background-color: var(--bg-card);
+    border-radius: 8px;
+    box-shadow: 0 4px 6px var(--shadow);
+    padding: 1rem;
+    transition: 0.3s ease;
+    display: flex;
+}
+
+.flex-column{
+    flex-direction: column;
+}
+
+.card:hover{
+    translate: 0 -0.2rem;
+}
+
+p {
+    margin: 0.5rem 0;
+    color: #555555;
+}
+
+.card h3{
+    font-size: 1.5rem;
+    margin: 0 0 0.5rem 0;
+    color: #0E94D4;
+}
+.card .icon{
+    font-size: 3rem;
+    color: #285991;
+}
+
+.stat-details{
+    width: 100%;
+    margin: auto 0.5rem;
+}
+
+.stat-details .text{
+    margin: 0;
+    font-size: 0.75rem;
+}
+
+.grid-content{
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 14rem));
+    gap: 1rem;
+    justify-content: center;
+    margin: 0 auto;
+}
+/*-------------------------------*/
+/*|         Profile Styles      |*/
+/*-------------------------------*/
+
+/* Layout for profile sections */
+.profile-container {
+    display: flex;
+    gap: 1rem;
+    max-width: 60rem;
+    flex-wrap: wrap;
+    align-items: stretch;
+}
+
+.profile-card {
+    margin: 1rem;
+    padding: 1.5rem 2rem;
+    background-color: var(--bg-card);
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    box-sizing: border-box;
+    flex: 0.75;
+}
+.profile-card.full-width {
+    flex-basis: 100%; /*force the element to take the entire width of the container, leading to a line break*/
+    margin: 1rem;
+}
+
+.profile-header {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 2rem;
+    margin-bottom: 2rem;
+}
+
+.profile-header .username{
+    font-size: 2rem;
+}
+
+.profile-header .profile-pic{
+    width: 10rem;
+    height: 10rem;
+}
+
+.profile-header .name-group {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+}
+
+.profile-sidebar {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    flex: 1;
+    min-width: 250px;
+}
+
+.profile-card.mini {
+    padding: 1rem 1.5rem;
+    margin: 1rem;
+}
+
+/* Typography for profile info */
+.user-role {
+    color: var(--primary);
+    font-weight: bold;
+    margin: 0.2rem 0;
+}
+
+.detail-item {
+    margin-bottom: 1.2rem;
+}
+
+.detail-item label {
+    display: block;
+    font-size: 0.75rem;
+    color: #888;
+    text-transform: uppercase;
+    margin-bottom: 0.2rem;
+    font-weight: bold;
+}
+
+.detail-item p {
+    margin: 0;
+    font-size: 1rem;
+    color: #333;
+}
+
+/* Ensure the header inside profile-card spreads items */
+.profile-card .profile-header {
+    justify-content: space-between;
+    width: 100%;
+}
+
+.profile-card select {
+    width: 10rem;
+}
+
+/*-------------------------------*/
+/*|         Login Styles        |*/
+/*-------------------------------*/
+#login-box{
+    width: 30rem;
+    margin: 8rem auto;
+    padding: 1rem;
+    box-sizing: border-box;
+}
+
+#login-box h2{
+    text-align: center;
+}
+
+
+/*------------------------------*/
+/* Ticket Lifecycle Bar */
+.ticket-lifecycle-container {
+    display: flex;
+    justify-content: space-between;
+    background: var(--bg-card);
+    padding: 1rem;
+    border-radius: 8px;
+    margin-bottom: 1.5rem;
+    box-shadow: 0 2px 4px var(--shadow);
+    position: relative;
+}
+
+.lifecycle-step {
+    flex: 1;
+    text-align: center;
+    font-size: 0.8rem;
+    font-weight: bold;
+    color: #ccc;
+    position: relative;
+}
+
+.lifecycle-step.achieved {
+    color: var(--primary-dark);
+}
+.lifecycle-step.current {
+    color: var(--primary); text-decoration: underline;
+}
+
+/* Status Badges */
+.badge{
+    display: inline-block ;
+    padding: 0.2rem 0.6rem;
+    border-radius: 12px;
+    font-size: 0.8rem;
+    font-weight: bold;
+    color: white;
+}
+
+.blue {background-color: #3498db;
+}
+.green{background-color: #27ae60;
+}
+.orange{background-color: #f39c12;
+}
+.red{background-color: #f31212;
+}
+/* Collaborator Styling */
+.collab-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 0.9rem;
+    margin-bottom: 0.5rem;
+}
+
+/* Mini Avatars for Table */
+.collab-avatars {
+    display: flex;
+    gap: -5px; /* Slight overlap for modern look */
+}
+
+.mini-avatar {
+    width: 25px;
+    height: 25px;
+    border-radius: 50%;
+    border: 2px solid var(--primary);
+    object-fit: cover;
+}
+
+/* SideBar Collaborator Layout */
+.collab-item {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.collab-item .name-group {
+    display: flex;
+    flex-direction: column;
+}
+
+.collab-item strong {
+    font-size: 0.9rem;
+    color: #333;
+}
+
+@media only screen and (max-width: 800px) {
+    :root{
+        --side-nav-width: 3.5rem;
+    }
+
+    .main-content{
+        margin-left: 3.5rem;
+        width: calc(100% - 3.5rem);
+    }
+
+    .profile-card{
+        flex: 1;
+    }
+
+    /* Stack table elements */
+    table, thead, tbody, th, td, tr {
+        display: block;
+    }
+
+    .table-card{
+        background-color: var(--primary-dark);
+    }
+    /* Hide the original header row */
+    thead tr {
+        display: none;
+    }
+
+    tr {
+        border: 1px solid #ddd;
+        border-radius: 8px; /* Round the card corners */
+        margin-bottom: 0.75rem;
+        padding: 0.25rem 0.5rem;
+        background: var(--bg-card);
+        box-shadow: 0 2px 4px var(--shadow);
+    }
+
+    td {
+        border: none;
+        position: relative;
+        padding-left: 40% !important;
+        border-bottom: 2px solid #E0E0E0;
+        justify-content: flex-end;
+        align-items: center;
+        font-size: 0.85rem;
+    }
+
+    td:last-child {
+        border-bottom: 0;
+    }
+
+    /* Make the labels smaller and more subtle */
+    td::before {
+        position: absolute;
+        left: 0.75rem;
+        width: 35%;
+        white-space: nowrap;
+        text-align: left;
+        font-weight: bold;
+        content: attr(data-label);
+        color: var(--text-muted); /* Greyer color for labels to make data pop */
+        font-size: 0.75rem;
+        text-transform: uppercase;
+    }
+
+    .progress-container{
+        justify-content: left;
+    }
+
+    /* Compact the avatar group for mobile */
+    .collab-avatars {
+        justify-content: flex-start;
+        transform: scale(0.9);
+        transform-origin: left;
+    }
+}

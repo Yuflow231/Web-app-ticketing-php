@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Project creation - Ticketing App</title>
+    <link rel="stylesheet" href="/src/assets/css/main.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/js/all.min.js" defer></script>
+    <script type="module" src="/src/assets/js/side-bar.js" defer></script>
+    <script type="module" src="/src/assets/js/drag-n-drop.js"></script>
+</head>
+<body>
+    <!-- Navigation Bar -->
+    <nav class="navigation">
+        <header class="top-bar">
+            <div class="menu-bar">
+                <span class="hamburger"><i class="fa-solid fa-bars"></i></span>
+                <span>| Ticketing App</span>
+            </div>
+            <div class="user-profile-header">
+                <a href="/src/pages/profile.html" class="user-profile-inline">
+                    <span class="username" data-type="first-name">User</span>
+                    <span class="username" data-type="last-name">Name</span>
+                    <!-- placeholder using my YouTube profile pic -->
+                    <img src="https://yt3.ggpht.com/pz97Hxe-gW4DR1-S4HmoZopwKXppAHPajMDtCaSSM-3HNV31wECJmegkZAohyEh7qAbCNQAHUg=s176-c-k-c0x00ffffff-no-rj" alt="User Profile" class="profile-pic" >
+                </a>
+            </div>
+        </header>
+
+        <!-- Side Navigation Bar -->
+        <div class="side-nav">
+            <div class="top-side">
+                <a href="/src/pages/dashBoard.html">
+                    <span class="icon"><i class="fa-solid fa-chart-line"></i></span>
+                    <span class="text">Dashboard</span>
+                </a>
+                <a href="/src/pages/projects/projects.html" class="active">
+                    <span class="icon"><i class="fa-solid fa-diagram-project"></i></span>
+                    <span class="text">Projects</span>
+                </a>
+                <a href="/src/pages/tickets/tickets.html">
+                    <span class="icon"><i class="fa-solid fa-ticket"></i></span>
+                    <span class="text">Tickets</span>
+                </a>
+                <a href="/src/pages/profile.html">
+                    <span class="icon"><i class="fa-solid fa-user"></i></span>
+                    <span class="text">Profile</span>
+                </a>
+            </div>
+
+            <a href="/index.html">
+                <span class="icon"><i class="fa-solid fa-right-from-bracket"></i></span>
+                <span class="text">Logout</span>
+            </a>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <header class="page-header">
+            <h1>Project creation</h1>
+        </header>
+
+        <form id="project-form" class="form-box">
+            <div class="form-2elements">
+                <div class="form-item-stacked">
+                    <label for="project-name">Project's name *</label>
+                    <input type="text" id="project-name" name="project-name" placeholder="Project's name" required>
+                </div>
+                <div class="form-item-stacked">
+                    <label for="client-name">Client *</label>
+                    <input type="text" id="client-name" name="client-name" placeholder="Client name" required>
+                </div>
+            </div>
+
+            <div class="form-2elements">
+                <div class="form-item-stacked">
+                    <label for="start-date">Starting date</label>
+                    <input type="date" id="start-date" name="start-date">
+                </div>
+                <div class="form-item-stacked">
+                    <label for="end-date">Estimated ending date</label>
+                    <input type="date" id="end-date" name="end-date">
+                </div>
+            </div>
+
+            <div class="form-item-stacked">
+                <label for="project-status">Status</label>
+                <select id="project-status" name="project-status">
+                    <option value="" selected hidden disabled>Select a status</option>
+                    <option value="New">New</option>
+                    <option value="In Progress">In Progress</option>
+                    <option value="On Hold">On Hold</option>
+                </select>
+            </div>
+
+            <div class="form-item-stacked">
+                <label for="project-description">Description</label>
+                <textarea id="project-description" name="project-description" rows="6" placeholder="Project's description"></textarea>
+            </div>
+
+            <div class="form-item-stacked">
+                <label for="drop-file">Attached files</label>
+                <div id="drop-zone">
+                    <p>Drag and drop files here or click to select files</p>
+                    <input type="file" id="drop-file" name="drop-file" style="display: none;">
+                </div>
+                <ul id="file-list"></ul>
+            </div>
+
+            <div class="centered" style="display: flex; gap: var(--spacing-md); justify-content: center;">
+                <button onclick="location.href = '/src/pages/projects/projects.html'" type="button" class="btn btn--outline">Cancel</button>
+                <button id="actions" class="btn">Create project</button>
+            </div>
+        </form>
+    </main>
+</body>
+<script type="module">
+    // Set as module to allow imports
+    import * as FormVerifier from "/src/assets/js/form-verifs.js";
+
+    // Get references to form's field
+    let formTitle = document.getElementById("project-name");
+    let formClient = document.getElementById("client-name");
+
+    let formStart = document.getElementById("start-date");
+    let formEnd = document.getElementById("end-date");
+
+    let formStatus = document.getElementById("project-status");
+
+    let formFiles = document.getElementById("file-list");
+    let formDrop = document.getElementById("drop-zone");
+
+    // prevent multiple request when the infos are correct
+    let canPress = true;
+
+    // Get reference to form button
+    let fromButton = document.getElementById("actions");
+
+    // Add click event on the previously got button
+    fromButton.addEventListener("click", (e) => {
+        e.preventDefault();
+        if (canPress){
+            verifyForm();
+        }
+        //console.log(formFiles.childElementCount);
+    });
+
+    function verifyForm(){
+        let formValidation = true;
+        // Clear previous highlights
+        FormVerifier.resetFormState([formTitle, formClient, formStart, formEnd, formStatus, formDrop]);
+
+        // check each field with its corresponding checks
+        formValidation &= FormVerifier.checkField(formTitle, formTitle, [FormVerifier.verifyEmptyness("Please enter a project's name")]);
+        formValidation &= FormVerifier.checkField(formClient, formClient, [FormVerifier.verifyEmptyness("Please enter the client name")]);
+
+        formValidation &= FormVerifier.checkField(formStart, formStart, [FormVerifier.verifyEmptyness("Please select a starting date"), FormVerifier.verifyDate("Starting date cannot be in the past")]);
+        formValidation &= FormVerifier.checkField(formEnd, formEnd, [FormVerifier.verifyEmptyness("Please select a ending date"), FormVerifier.verifyDate("Ending date cannot be in the past")]);
+        formValidation &= FormVerifier.checkField([formStart,formEnd], formEnd, [FormVerifier.verifyDateDiff("The ending date must be after the starting date")]);
+
+
+        formValidation &= FormVerifier.checkField(formStatus, formStatus, [FormVerifier.verifyEmptyness("Please select the project's status")]);
+        formValidation &= FormVerifier.checkField(formFiles, formDrop, [FormVerifier.verifyFile("Please send the project contract")]);
+
+        // if everything checks out
+        if(formValidation){
+            canPress = false;
+            FormVerifier.validateForm("Creating project ...", "/src/pages/projects/projects.html");
+        }
+    }
+</script>
+</html>

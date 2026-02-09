@@ -1,0 +1,65 @@
+{
+  "app": {
+    "title": "Application de Ticketing"
+  },
+  "navigation": {
+    "dashboard": "Tableau de bord",
+    "projects": "Projets",
+    "tickets": "Tickets",
+    "profile": "Profil",
+    "logout": "Déconnexion"
+  },
+  "auth": {
+    "login": "Connexion",
+    "email": "Email",
+    "password": "Mot de passe",
+    "forgotPassword": "Mot de passe oublié ?",
+    "resetPassword": "Réinitialiser le mot de passe",
+    "resetPasswordInstruction": "Entrez votre adresse email pour réinitialiser votre mot de passe.",
+    "sendLink": "Envoyer le lien",
+    "backToLogin": "Retour à la connexion",
+    "connecting": "Connexion en cours ...",
+    "emailRequired": "L'email est requis",
+    "emailInvalid": "Veuillez entrer une adresse email valide",
+    "passwordRequired": "Veuillez entrer votre mot de passe"
+  },
+  "user": {
+    "firstName": "Utilisateur",
+    "lastName": "Nom",
+    "userProfile": "Profil Utilisateur",
+    "administrator": "Administrateur"
+  },
+  "dashboard": {
+    "title": "Tableau de bord",
+    "statistics": "Statistiques",
+    "activeProjects": "Projets actifs"
+  },
+  "projects": {
+    "title": "Mes projets",
+    "newProject": "Nouveau projet",
+    "projectCreation": "Création de projet",
+    "projectName": "Nom du projet",
+    "status": "Statut",
+    "all": "Tous",
+    "id": "ID",
+    "projectDetails": "Projet: Skyblocker"
+  },
+  "tickets": {
+    "title": "Mes tickets",
+    "createTicket": "Créer un ticket",
+    "ticketCreation": "Création de ticket",
+    "ticketObject": "Objet du ticket",
+    "priority": "Priorité",
+    "ticketDetails": "Ticket #101: Barres d'interface personnalisables",
+    "ticketTitle": "Titre",
+    "lifecycle": {
+      "new": "Nouveau",
+      "toBeApproved": "À approuver",
+      "inProgress": "En cours",
+      "completed": "Terminé"
+    }
+  },
+  "common": {
+    "required": "*"
+  }
+}

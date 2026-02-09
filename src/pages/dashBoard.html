@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - Ticketing App</title>
+    <link rel="stylesheet" href="/src/assets/css/main.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/js/all.min.js"></script>
+    <script type="module" src="/src/assets/js/side-bar.js"></script>
+
+    <link rel="icon" type="image/png" href="/src/assets/images/icon.png" />
+</head>
+<body>
+    <!-- Navigation Bar -->
+    <nav class="navigation">
+        <header class="top-bar">
+            <div class="menu-bar">
+                <span class="hamburger"><i class="fa-solid fa-bars"></i></span>
+                <span>| Ticketing App</span>
+            </div>
+            <div class="user-profile-header">
+                <a href="/src/pages/profile.html" class="user-profile-inline">
+                    <span class="username" data-type="first-name">User</span>
+                    <span class="username" data-type="last-name">Name</span>
+                    <!-- placeholder using my YouTube profile pic -->
+                    <img src="https://yt3.ggpht.com/pz97Hxe-gW4DR1-S4HmoZopwKXppAHPajMDtCaSSM-3HNV31wECJmegkZAohyEh7qAbCNQAHUg=s176-c-k-c0x00ffffff-no-rj" alt="User Profile" class="profile-pic" >
+                </a>
+            </div>
+        </header>
+
+        <!-- Side Navigation Bar -->
+        <div class="side-nav">
+            <div class="top-side">
+                <a href="/src/pages/dashBoard.html" class="active">
+                    <span class="icon"><i class="fa-solid fa-chart-line"></i></span>
+                    <span class="text">Dashboard</span>
+                </a>
+                <a href="/src/pages/projects/projects.html">
+                    <span class="icon"><i class="fa-solid fa-diagram-project"></i></span>
+                    <span class="text">Projects</span>
+                </a>
+                <a href="/src/pages/tickets/tickets.html">
+                    <span class="icon"><i class="fa-solid fa-ticket"></i></span>
+                    <span class="text">Tickets</span>
+                </a>
+                <a href="/src/pages/profile.html">
+                    <span class="icon"><i class="fa-solid fa-user"></i></span>
+                    <span class="text">Profile</span>
+                </a>
+            </div>
+
+            <a href="/index.html">
+                <span class="icon"><i class="fa-solid fa-right-from-bracket"></i></span>
+                <span class="text">Logout</span>
+            </a>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <header class="page-header">
+            <h1>Dashboard</h1>
+        </header>
+
+        <!-- Statistics Section -->
+        <section id="statistics">
+            <h2>Statistics</h2>
+            <div class="grid-stats">
+                <div class="stat-card">
+                    <div class="icon"><i class="fa-solid fa-diagram-project"></i></div>
+                    <div class="stat-details">
+                        <h3 id="stat-projects">0</h3>
+                        <p class="text">Active projects</p>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="icon"><i class="fa-solid fa-ticket"></i></div>
+                    <div class="stat-details">
+                        <h3 id="stat-tickets">0</h3>
+                        <p class="text">Active Tickets</p>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="icon"><i class="fa-solid fa-triangle-exclamation"></i></div>
+                    <div class="stat-details">
+                        <h3 id="stat-urgent">0</h3>
+                        <p class="text">Urgent Tickets</p>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="icon"><i class="fa-solid fa-circle-check"></i></div>
+                    <div class="stat-details">
+                        <h3 id="stat-closed">0</h3>
+                        <p class="text">Closed Tickets</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Recent Projects Section -->
+        <section id="projects">
+            <h2>Recent projects</h2>
+            <div class="grid-content" id="recent-projects">
+                <!-- Projects will be loaded here -->
+                <div class="card flex-column">
+                    <h3>Skyblocker</h3>
+                    <p>Tickets: 2</p>
+                    <p>Status:  <span class="badge green">In Progress</span></p>
+                </div>
+                <div class="card flex-column">
+                    <h3>Project B</h3>
+                    <p>Tickets: 8</p>
+                    <p>Status:  <span class="badge orange">On Hold</span></p>
+                </div>
+                <div class="card flex-column">
+                    <h3>Project C</h3>
+                    <p>Tickets: 1</p>
+                    <p>Status:  <span class="badge red">Closed</span></p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Recent Tickets Section -->
+        <section class="tickets">
+            <h2>Recent tickets</h2>
+            <div class="table-card">
+                <table>
+                    <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Title</th>
+                        <th>Project</th>
+                        <th>Status</th>
+                        <th>Priority</th>
+                        <th>Assigned</th>
+                        <th>Actions</th>
+                    </tr>
+                    </thead>
+                    <tbody id="recent-tickets">
+                    <!-- Tickets will be loaded here -->
+                    <tr>
+                        <td data-label="ID">#101</td>
+                        <td data-label="Title"><strong>Customizable UI bars</strong></td>
+                        <td data-label="Project">Skyblocker</td>
+                        <td data-label="Status"><span class="badge green">In Progress</span></td>
+                        <td data-label="Priority"><span class="badge orange">Medium</span></td>
+                        <td data-label="Assigned">
+                            <div class="avatar-line">
+                                <img src="/src/assets/images/icon.png" title="Unassigned" alt="profile-picture" class="profile-pic-mini">
+                            </div>
+                        </td>
+                        <td data-label="Actions"><a href="/src/pages/tickets/ticket-details.html" class="icon"><i class="fa-solid fa-arrow-up-right-from-square"></i></a></td>
+                    </tr>
+                    <tr>
+                        <td data-label="ID">#105</td>
+                        <td data-label="Title"><strong>Implement Dark Mode</strong></td>
+                        <td data-label="Project">Skyblocker</td>
+                        <td data-label="Status"><span class="badge blue">New</span></td>
+                        <td data-label="Priority"><span class="badge green">Low</span></td>
+                        <td data-label="Assigned">
+                            <div class="avatar-line">
+                                <img src="/src/assets/images/icon.png" title="Unassigned" alt="profile-picture" class="profile-pic-mini">
+                                <img src="/src/assets/images/icon.png" title="Unassigned" alt="profile-picture" class="profile-pic-mini">
+                            </div>
+                        </td>
+                        <td data-label="Actions"><a href="/src/pages/tickets/ticket-details.html" class="icon"><i class="fa-solid fa-arrow-up-right-from-square"></i></a></td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+    </main>
+</body>
+</html>

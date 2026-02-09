@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ticket details - Ticketing App</title>
+    <link rel="stylesheet" href="/src/assets/css/main.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/js/all.min.js" defer></script>
+    <script type="module" src="/src/assets/js/side-bar.js"></script>
+</head>
+<body>
+    <!-- Navigation Bar -->
+    <nav class="navigation">
+        <header class="top-bar">
+            <div class="menu-bar">
+                <span class="hamburger"><i class="fa-solid fa-bars"></i></span>
+                <span>| Ticketing App</span>
+            </div>
+            <div class="user-profile-header">
+                <a href="/src/pages/profile.html" class="user-profile-inline">
+                    <span class="username" data-type="first-name">User</span>
+                    <span class="username" data-type="last-name">Name</span>
+                    <!-- placeholder using my YouTube profile pic -->
+                    <img src="https://yt3.ggpht.com/pz97Hxe-gW4DR1-S4HmoZopwKXppAHPajMDtCaSSM-3HNV31wECJmegkZAohyEh7qAbCNQAHUg=s176-c-k-c0x00ffffff-no-rj" alt="User Profile" class="profile-pic" >
+                </a>
+            </div>
+        </header>
+
+        <!-- Side Navigation Bar -->
+        <div class="side-nav">
+            <div class="top-side">
+                <a href="/src/pages/dashBoard.html">
+                    <span class="icon"><i class="fa-solid fa-chart-line"></i></span>
+                    <span class="text">Dashboard</span>
+                </a>
+                <a href="/src/pages/projects/projects.html">
+                    <span class="icon"><i class="fa-solid fa-diagram-project"></i></span>
+                    <span class="text">Projects</span>
+                </a>
+                <a href="/src/pages/tickets/tickets.html" class="active">
+                    <span class="icon"><i class="fa-solid fa-ticket"></i></span>
+                    <span class="text">Tickets</span>
+                </a>
+                <a href="/src/pages/profile.html">
+                    <span class="icon"><i class="fa-solid fa-user"></i></span>
+                    <span class="text">Profile</span>
+                </a>
+            </div>
+
+            <a href="/index.html">
+                <span class="icon"><i class="fa-solid fa-right-from-bracket"></i></span>
+                <span class="text">Logout</span>
+            </a>
+        </div>
+    </nav>
+
+
+    <!-- Page content -->
+    <main class="main-content">
+        <header class="page-header">
+            <h1>Ticket #101: Customizable UI bars</h1>
+        </header>
+
+        <div class="ticket-lifecycle-container">
+            <div class="lifecycle-step achieved">New</div>
+            <div class="lifecycle-step achieved">To be Approved</div>
+            <div class="lifecycle-step current">In Progress</div>
+            <div class="lifecycle-step">Completed</div>
+        </div>
+
+        <div class="detail-container">
+            <section class="detail-card">
+                <div class="detail-item">
+                    <label>Title</label>
+                    <h2>Customizable UI bars</h2>
+                </div>
+
+                <div class="detail-item" >
+                    <label>Detailed Description</label>
+                    <p>Create modulable and customizable bars to replace the default bars of Hypixel Skyblock</p>
+                </div>
+
+                <div class="inline-elements">
+                    <div class="detail-item">
+                        <label>Actual Time Spent</label>
+                        <p>4.5 Hours</p>
+                    </div>
+                    <div class="detail-item">
+                        <label>Estimated Time</label>
+                        <p>8.0 Hours</p>
+                    </div>
+                </div>
+
+                <div class="inline-elements" style="margin-top: auto; padding-top: 1rem;">
+                    <button class="btn">Update Ticket</button>
+                    <button class="btn btn--danger">Close Ticket</button>
+                </div>
+            </section>
+
+            <div class="detail-side">
+                <section class="detail-card">
+                    <h2>Classification</h2>
+                    <div class="detail-item">
+                        <label>Status</label>
+                        <span class="badge green">In Progress</span>
+                    </div>
+                    <div class="detail-item">
+                        <label>Priority</label>
+                        <span class="badge orange">Medium</span>
+                    </div>
+                    <div class="detail-item">
+                        <label>Type</label>
+                        <span>Included</span>
+                    </div>
+                </section>
+
+                <section class="detail-card">
+                    <h2>Assigned Collaborators</h2>
+                    <div id="collaborator-list">
+                        <div class="user-profile-inline" style="margin-bottom: var(--spacing-sm);">
+                            <img src="/src/assets/images/icon.png" alt="User Profile" class="profile-pic" >
+                            <div class="item-stacked" style="margin-left: var(--spacing-sm);">
+                                <div>
+                                    <span class="username" data-type="first-name">VicIsACat</span>
+                                    <span class="username" data-type="last-name"></span>
+                                </div>
+                                <span class="user-role">Cat</span>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            </div>
+
+            <div class="detail-card full-width" id="file-list">
+                <h2>Files associated</h2>
+                <button class="btn" style="margin-bottom: var(--spacing-sm)">Edit documents</button>
+                <ul>
+                    <li>Visual Examples</li>
+                    <li>Visual Examples</li>
+                </ul>
+            </div>
+        </div>
+    </main>
+</body>
+</html>
