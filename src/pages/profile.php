@@ -60,7 +60,7 @@
                         </select>
                     </div>
                     <div class="form-item-stacked">
-                        <label for="debug">Debug mod</label>
+                        <label for="debug">Debug mode</label>
                         <input type="checkbox" id="debug">
                     </div>
                 </section>

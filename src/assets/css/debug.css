@@ -1,8 +1,32 @@
-.debug-element{
+/* Debug Panel - Fixed bottom-right container */
+.debug-panel {
     position: fixed;
-    padding: 0.25rem;
-    z-index:2000;
-    color:white;
-    background-color: rgba(0, 0, 0, 0.8);
+    top: 0;
+    left: 0;
+    padding: 0.5rem 0;
+    font-size: 0.85rem;
+    z-index: 9999;
+    min-width: 250px;
     pointer-events: none;
+}
+
+/* Individual debug info lines */
+.debug-element {
+    width: fit-content;
+    margin: 0.25rem 0;
+    padding: 0.3rem;
+    color: white;
+    background-color: rgba(0, 0, 0, 0.85);
+    border-left: 2px solid #00ff00;
+    font-size: 0.8rem;
+    word-break: break-word;
+    backdrop-filter: blur(5px);
+}
+
+.debug-element:first-child {
+    margin-top: 0;
+}
+
+.debug-element:last-child {
+    margin-bottom: 0;
 }

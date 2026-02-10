@@ -1,25 +1,34 @@
 <?php
-    $link = basename($_SERVER['PHP_SELF']);
-    $no = pathinfo($link, PATHINFO_FILENAME);
-    $sub = substr($no,   0, 5);
+    $currentPage = basename($_SERVER['PHP_SELF']);
+    $pagePrefix = pathinfo($currentPage, PATHINFO_FILENAME);
+    $pageShortPrefix = substr($pagePrefix, 0, 5);
 
-    $debug = isset($_GET["debug"]) ? "?debug=1" : "";
-    $debugEnabled = isset($_GET["debug"]) ? "true" : "false";
+    // Improved debug handling
+    $debugEnabled = isset($_GET["debug"]) && $_GET["debug"] == "1";
+    $debug = $debugEnabled ? "?debug=1" : "";
 
-    if(!is_null($_GET["debug"])){
-        echo("<p class=\"debug-element\"> {$no} </p>");
-        echo("<p class=\"debug-element\" style=\"background-color: transparent; color: red;\"> {$sub} </p>");
+    // Debug visual output - only show when debug is enabled
+    if ($debugEnabled) {
+        echo "<div class='debug-panel'>";
+        echo "  <p class='debug-element'>Whole link: {$_SERVER['PHP_SELF']}</p>";
+        echo "  <p class='debug-element'>Current Page: {$pagePrefix}</p>";
+        echo "  <p class='debug-element'>Page Prefix: {$pageShortPrefix}</p>";
+
+        echo "</div>";
     }
 
-    function laink($refLInk):void{
-        global $sub, $debug; //need to create ref to global
-        $split = basename($refLInk);
-        if(str_contains($split, $sub)){
-            echo("<a href='{$refLInk}{$debug}' class=\"active\">");
-        }
-        else {
-            echo("<a href='{$refLInk}{$debug}'>");
-        }
+    /**
+     * Helper function to generate navigation links with proper active state and debug param
+     * @param string $refLink The target URL
+     */
+    function laink(string $refLink): void {
+        global $pageShortPrefix, $debug;
+
+        $linkBasename = basename($refLink);
+        $isActive = str_contains($linkBasename, $pageShortPrefix);
+        $activeClass = $isActive ? ' class="active"' : '';
+
+        echo "<a href='{$refLink}{$debug}'{$activeClass}>";
     }
 ?>
 
