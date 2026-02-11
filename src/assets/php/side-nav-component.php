@@ -1,35 +1,37 @@
 <?php
-    $currentPage = basename($_SERVER['PHP_SELF']);
-    $pagePrefix = pathinfo($currentPage, PATHINFO_FILENAME);
-    $pageShortPrefix = substr($pagePrefix, 0, 5);
+    require_once("debug-handler.php");
 
-    // Improved debug handling
-    $debugEnabled = isset($_GET["debug"]) && $_GET["debug"] == "1";
-    $debug = $debugEnabled ? "?debug=1" : "";
+    // Initialize debug handler
+    $debugHandler = DebugHandler::getInstance();
 
-    // Debug visual output - only show when debug is enabled
-    if ($debugEnabled) {
-        echo "<div class='debug-panel'>";
-        echo "  <p class='debug-element'>Whole link: {$_SERVER['PHP_SELF']}</p>";
-        echo "  <p class='debug-element'>Current Page: {$pagePrefix}</p>";
-        echo "  <p class='debug-element'>Page Prefix: {$pageShortPrefix}</p>";
+    $currentFile = basename($_SERVER['PHP_SELF']);
+    $pageName = pathinfo($currentFile, PATHINFO_FILENAME);
+    $pagePrefix = substr($pageName, 0, 5);
 
-        echo "</div>";
-    }
+    // Add additional debug info
+
+    $debugHandler->addInfo("Current page",  $pageName);
+    $debugHandler->addInfo("Page's prefix",  $pagePrefix);
+
+    // Get debug parameter for URLs
+    $debug = $debugHandler->getDebugParam();
 
     /**
      * Helper function to generate navigation links with proper active state and debug param
      * @param string $refLink The target URL
      */
     function laink(string $refLink): void {
-        global $pageShortPrefix, $debug;
+        global $pagePrefix, $debug;
 
         $linkBasename = basename($refLink);
-        $isActive = str_contains($linkBasename, $pageShortPrefix);
+        $isActive = str_contains($linkBasename, $pagePrefix);
         $activeClass = $isActive ? ' class="active"' : '';
 
         echo "<a href='{$refLink}{$debug}'{$activeClass}>";
     }
+
+    // Render debug panel
+    $debugHandler->renderPanel();
 ?>
 
 <nav class="navigation">

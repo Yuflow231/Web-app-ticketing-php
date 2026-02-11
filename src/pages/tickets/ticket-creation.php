@@ -65,7 +65,7 @@
             </div>
 
             <div class="centered" style="display: flex; gap: var(--spacing-md); justify-content: center;">
-                <button onclick="location.href = 'tickets.php<?= $debug ?>'" type="button" class="btn btn--outline">Cancel</button>
+                <button onclick="location.href = 'tickets.php<?=  $debugHandler->getDebugParam() ?>'" type="button" class="btn btn--outline">Cancel</button>
                 <button id="actions" class="btn">Create ticket</button>
             </div>
         </form>
@@ -110,7 +110,7 @@
         // if everything checks out
         if(formValidation){
             canPress = false;
-            FormVerifier.validateForm("Creating ticket ...", "/src/pages/tickets/tickets.php<?= $debug ?>");
+            FormVerifier.validateForm("Creating ticket ...", "/src/pages/tickets/tickets.php<?=  $debugHandler->getDebugParam() ?>");
         }
     }
 </script>

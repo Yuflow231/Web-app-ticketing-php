@@ -9,6 +9,16 @@
     <script type="module" src="../../src/assets/js/side-bar.js"></script>
 </head>
 <body>
+    <?php
+        // Import debug handler
+        require_once("../assets/php/debug-handler.php");
+        $debugHandler = DebugHandler::getInstance();
+
+        // Add page-specific debug info
+        $debugHandler->addInfo('Test', 'Additional ');
+
+    ?>
+
     <!-- Navigation Bar -->
     <?php require_once("../assets/php/side-nav-component.php"); ?>
 
@@ -70,7 +80,7 @@
                     <div class="detail-item">
                         <label>Password</label>
                         <p style="margin-bottom: 1rem;">••••••••••••</p>
-                        <a href="./reset-password.php" class="password" style="">Change Password</a>
+                        <a href="./reset-password.php<?= $debugHandler->getDebugParam() ?>" class="password" style="">Change Password</a>
                     </div>
                 </section>
             </div>
@@ -84,26 +94,8 @@
     const languageSelect = document.getElementById("language-select");
     const debugCheck = document.getElementById("debug");
 
-    // Fonction pour ajouter le paramètre debug aux liens
-    function updateLinksWithDebug() {
-        const debugEnabled = localStorage.getItem("debug") === "true";
-
-        if (debugEnabled) {
-            // Sélectionner tous les liens de navigation
-            const links = document.querySelectorAll('.side-nav a[href]');
-
-            links.forEach(link => {
-                const url = new URL(link.href);
-                url.searchParams.set('debug', '1');
-                link.href = url.toString();
-            });
-        }
-    }
-
     window.addEventListener("DOMContentLoaded", () => {
         languageSelect.value = LangHandler.getLanguage();
-        updateLinksWithDebug();
-
 
         debugCheck.checked = localStorage.getItem("debug") === "true";
     });

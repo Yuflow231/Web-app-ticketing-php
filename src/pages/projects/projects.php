@@ -17,7 +17,7 @@
         <header class="page-header">
             <div class="page-header-line">
                 <h2>My projects</h2>
-                <a href="./project-creation.php<?= $debug ?>">
+                <a href="./project-creation.php<?=  $debugHandler->getDebugParam() ?>">
                     <button type="button" class="btn">
                         <i class="fa-solid fa-plus"></i>
                         Create project
@@ -84,7 +84,7 @@
                             </div>
                         </td>
                         <td data-label="Creation date">52/02/1996</td>
-                        <td data-label="Actions"><a href="./project-details.php<?= $debug ?>" class="icon"><i class="fa-solid fa-arrow-up-right-from-square"></i></a></td>
+                        <td data-label="Actions"><a href="./project-details.php<?=  $debugHandler->getDebugParam() ?>" class="icon"><i class="fa-solid fa-arrow-up-right-from-square"></i></a></td>
                     </tr>
                     <tr>
                         <td data-label="ID">#102</td>
@@ -107,7 +107,7 @@
                             </div>
                         </td>
                         <td data-label="Creation date">30/01/2026</td>
-                        <td data-label="Actions"><a href="./project-details.php<?= $debug ?>" class="icon"><i class="fa-solid fa-arrow-up-right-from-square"></i></a></td>
+                        <td data-label="Actions"><a href="./project-details.php<?=  $debugHandler->getDebugParam() ?>" class="icon"><i class="fa-solid fa-arrow-up-right-from-square"></i></a></td>
                     </tr>
                     <tr>
                         <td data-label="ID">#102</td>
@@ -130,7 +130,7 @@
                             </div>
                         </td>
                         <td data-label="Creation date">30/01/2026</td>
-                        <td data-label="Actions"><a href="./project-details.php<?= $debug ?>" class="icon"><i class="fa-solid fa-arrow-up-right-from-square"></i></a></td>
+                        <td data-label="Actions"><a href="./project-details.php<?=  $debugHandler->getDebugParam() ?>" class="icon"><i class="fa-solid fa-arrow-up-right-from-square"></i></a></td>
                     </tr>
                     <tr>
                         <td data-label="ID">#102</td>
@@ -153,7 +153,7 @@
                             </div>
                         </td>
                         <td data-label="Creation date">30/01/2026</td>
-                        <td data-label="Actions"><a href="project-details.php<?= $debug ?>" class="icon"><i class="fa-solid fa-arrow-up-right-from-square"></i></a></td>
+                        <td data-label="Actions"><a href="project-details.php<?=  $debugHandler->getDebugParam() ?>" class="icon"><i class="fa-solid fa-arrow-up-right-from-square"></i></a></td>
                     </tr>
                     <tr>
                         <td data-label="ID">#102</td>
@@ -176,7 +176,7 @@
                             </div>
                         </td>
                         <td data-label="Creation date">30/01/2026</td>
-                        <td data-label="Actions"><a href="project-details.php<?= $debug ?>" class="icon"><i class="fa-solid fa-arrow-up-right-from-square"></i></a></td>
+                        <td data-label="Actions"><a href="project-details.php<?=  $debugHandler->getDebugParam() ?>" class="icon"><i class="fa-solid fa-arrow-up-right-from-square"></i></a></td>
                     </tr>
                     <tr>
                         <td data-label="ID">#102</td>
@@ -199,7 +199,7 @@
                             </div>
                         </td>
                         <td data-label="Creation date">30/01/2026</td>
-                        <td data-label="Actions"><a href="project-details.php<?= $debug ?>" class="icon"><i class="fa-solid fa-arrow-up-right-from-square"></i></a></td>
+                        <td data-label="Actions"><a href="project-details.php<?=  $debugHandler->getDebugParam() ?>" class="icon"><i class="fa-solid fa-arrow-up-right-from-square"></i></a></td>
                     </tr>
                     <tr>
                         <td data-label="ID">#102</td>
@@ -222,7 +222,7 @@
                             </div>
                         </td>
                         <td data-label="Creation date">30/01/2026</td>
-                        <td data-label="Actions"><a href="project-details.php<?= $debug ?>" class="icon"><i class="fa-solid fa-arrow-up-right-from-square"></i></a></td>
+                        <td data-label="Actions"><a href="project-details.php<?=  $debugHandler->getDebugParam() ?>" class="icon"><i class="fa-solid fa-arrow-up-right-from-square"></i></a></td>
                     </tr>
                     </tbody>
                 </table>

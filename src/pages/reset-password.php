@@ -1,5 +1,11 @@
 <?php
-    $debug = isset($_GET["debug"]) ? "?debug=1" : "";
+    require_once("../assets/php/debug-handler.php");
+    // Initialize debug handler
+    $debugHandler = DebugHandler::getInstance();
+
+    $debugHandler->addInfo('Test', 'passward');
+
+    $debugHandler->renderPanel();
 ?>
 <!DOCTYPE html>
 <html lang="fr">
@@ -28,7 +34,7 @@
             </div>
 
             <div class="centered" style="margin-top: var(--spacing-md);">
-                <button onclick="location.href = '../../index.php<?= $debug ?>'" type="button" class="btn btn--outline">Back to login</button>
+                <button onclick="location.href = '../../index.php<?= $debugHandler->getDebugParam() ?>'" type="button" class="btn btn--outline">Back to login</button>
             </div>
         </form>
     </div>

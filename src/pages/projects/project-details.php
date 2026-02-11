@@ -124,14 +124,14 @@
                             <td data-label="Title"><strong>Customizable UI bars</strong></td>
                             <td data-label="Status"><span class="badge orange">In Progress</span></td>
                             <td data-label="Priority"><span class="badge orange">Medium</span></td>
-                            <td data-label="Action"><a href="/src/pages/tickets/ticket-details.php<?= $debug ?>" class="icon"><i class="fa-solid fa-arrow-up-right-from-square"></i></a></td>
+                            <td data-label="Action"><a href="/src/pages/tickets/ticket-details.php<?=  $debugHandler->getDebugParam() ?>" class="icon"><i class="fa-solid fa-arrow-up-right-from-square"></i></a></td>
                         </tr>
                         <tr>
                             <td data-label="ID">#105</td>
                             <td data-label="Title"><strong>Implement Dark Mode</strong></td>
                             <td data-label="Status"><span class="badge blue">New</span></td>
                             <td data-label="Priority"><span class="badge green">Low</span></td>
-                            <td data-label="Action"><a href="/src/pages/tickets/ticket-details.php<?= $debug ?>" class="icon"><i class="fa-solid fa-arrow-up-right-from-square"></i></a></td>
+                            <td data-label="Action"><a href="/src/pages/tickets/ticket-details.php<?=  $debugHandler->getDebugParam() ?>" class="icon"><i class="fa-solid fa-arrow-up-right-from-square"></i></a></td>
                         </tr>
                         </tbody>
                     </table>

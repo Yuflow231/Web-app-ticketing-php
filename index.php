@@ -1,5 +1,11 @@
 <?php
-    $debug = isset($_GET["debug"]) ? "?debug=1" : "";
+    require_once("src/assets/php/debug-handler.php");
+    // Initialize debug handler
+    $debugHandler = DebugHandler::getInstance();
+
+    $debugHandler->addInfo('Test', 'login');
+
+    $debugHandler->renderPanel();
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -31,7 +37,7 @@
             </div>
 
             <div class="password">
-                <a href="./src/pages/reset-password.php">Forgot password ?</a>
+                <a href="./src/pages/reset-password.php<?= $debugHandler->getDebugParam() ?>">Forgot password ?</a>
             </div>
 
             <div class="centered">
@@ -80,7 +86,7 @@
         // if everything checks out
         if(formValidation){
             canPress = false;
-            FormVerifier.validateForm("Connecting ...", "./src/pages/dashBoard.php<?= $debug ?>");
+            FormVerifier.validateForm("Connecting ...", "./src/pages/dashBoard.php<?= $debugHandler->getDebugParam() ?>");
         }
     }
 

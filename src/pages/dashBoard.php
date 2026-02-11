@@ -106,7 +106,7 @@
                                 <img src="../assets/images/icon.png" title="Unassigned" alt="profile-picture" class="profile-pic-mini">
                             </div>
                         </td>
-                        <td data-label="Actions"><a href="./tickets/ticket-details.php<?= $debug ?>" class="icon"><i class="fa-solid fa-arrow-up-right-from-square"></i></a></td>
+                        <td data-label="Actions"><a href="./tickets/ticket-details.php<?= $debugHandler->getDebugParam() ?>" class="icon"><i class="fa-solid fa-arrow-up-right-from-square"></i></a></td>
                     </tr>
                     <tr>
                         <td data-label="ID">#105</td>
@@ -120,7 +120,7 @@
                                 <img src="../assets/images/icon.png" title="Unassigned" alt="profile-picture" class="profile-pic-mini">
                             </div>
                         </td>
-                        <td data-label="Actions"><a href="./tickets/ticket-details.php<?= $debug ?>" class="icon"><i class="fa-solid fa-arrow-up-right-from-square"></i></a></td>
+                        <td data-label="Actions"><a href="./tickets/ticket-details.php<?= $debugHandler->getDebugParam() ?>" class="icon"><i class="fa-solid fa-arrow-up-right-from-square"></i></a></td>
                     </tr>
                     </tbody>
                 </table>

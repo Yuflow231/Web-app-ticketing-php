@@ -17,7 +17,7 @@
         <header class="page-header">
             <div class="page-header-line">
                 <h2>My tickets</h2>
-                <a href="./ticket-creation.php<?= $debug ?>">
+                <a href="./ticket-creation.php<?= $debugHandler->getDebugParam() ?>">
                     <button type="button" class="btn">
                         <i class="fa-solid fa-plus"></i>
                         Create ticket
@@ -86,7 +86,7 @@
                                     <img src="../../assets/images/icon.png" title="Unassigned" alt="profile-picture" class="profile-pic-mini">
                                 </div>
                             </td>
-                            <td data-label="Actions"><a href="./ticket-details.php<?= $debug ?>" class="icon"><i class="fa-solid fa-arrow-up-right-from-square"></i></a></td>
+                            <td data-label="Actions"><a href="./ticket-details.php<?=  $debugHandler->getDebugParam() ?>" class="icon"><i class="fa-solid fa-arrow-up-right-from-square"></i></a></td>
                         </tr>
                         <tr>
                             <td data-label="ID">#102</td>
@@ -100,7 +100,7 @@
                                     <img src="../../assets/images/icon.png" title="Unassigned" alt="profile-picture" class="profile-pic-mini">
                                 </div>
                             </td>
-                            <td data-label="Actions"><a href="./ticket-details.php<?= $debug ?>" class="icon"><i class="fa-solid fa-arrow-up-right-from-square"></i></a></td>
+                            <td data-label="Actions"><a href="./ticket-details.php<?=  $debugHandler->getDebugParam() ?>" class="icon"><i class="fa-solid fa-arrow-up-right-from-square"></i></a></td>
                         </tr>
                         <tr>
                             <td data-label="ID">#105</td>
@@ -113,7 +113,7 @@
                                     <img src="../../assets/images/icon.png" title="Unassigned" alt="profile-picture" class="profile-pic-mini">
                                 </div>
                             </td>
-                            <td data-label="Actions"><a href="./ticket-details.php<?= $debug ?>" class="icon"><i class="fa-solid fa-arrow-up-right-from-square"></i></a></td>
+                            <td data-label="Actions"><a href="./ticket-details.php<?=  $debugHandler->getDebugParam() ?>" class="icon"><i class="fa-solid fa-arrow-up-right-from-square"></i></a></td>
                         </tr>
                     </tbody>
                 </table>

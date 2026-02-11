@@ -67,7 +67,7 @@
             </div>
 
             <div class="centered" style="display: flex; gap: var(--spacing-md); justify-content: center;">
-                <button onclick="location.href = './projects.php<?= $debug ?>'" type="button" class="btn btn--outline">Cancel</button>
+                <button onclick="location.href = './projects.php<?=  $debugHandler->getDebugParam() ?>'" type="button" class="btn btn--outline">Cancel</button>
                 <button id="actions" class="btn">Create project</button>
             </div>
         </form>
@@ -124,7 +124,7 @@
         // if everything checks out
         if(formValidation){
             canPress = false;
-            FormVerifier.validateForm("Creating project ...", "/src/pages/projects/projects.php<?= $debug ?>");
+            FormVerifier.validateForm("Creating project ...", "/src/pages/projects/projects.php<?=  $debugHandler->getDebugParam() ?>");
         }
     }
 </script>
