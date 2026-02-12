@@ -4,6 +4,8 @@
     $debugHandler = DebugHandler::getInstance();
 
     $debugHandler->addPostParams();
+
+    $debugHandler->addFileParams();
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -14,7 +16,6 @@
     <link rel="stylesheet" href="../../assets/css/main.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/js/all.min.js" defer></script>
     <script type="module" src="../../assets/js/side-bar.js"></script>
-    <script type="module" src="../../assets/js/drag-n-drop.js"></script>
 </head>
 <body>
     <!-- Navigation Bar -->
@@ -26,7 +27,7 @@
             <h1>Ticket creation</h1>
         </header>
 
-        <form id="ticket-form" class="form-box" method="POST">
+        <form id="ticket-form" class="form-box" method="POST" enctype="multipart/form-data">
             <div class="form-2elements">
                 <div class="form-item-stacked">
                     <label for="ticket-title">Ticket's object *</label>
@@ -66,7 +67,7 @@
                 <label for="drop-file">Attached files</label>
                 <div id="drop-zone">
                     <p>Drag and drop files here or click to select files</p>
-                    <input type="file" id="drop-file" name="drop-file" multiple style="display: none;">
+                    <input type="file" id="drop-file" name="drop-file[]" multiple style="display: none;">
                 </div>
                 <ul id="file-list"></ul>
             </div>
@@ -81,6 +82,7 @@
 <script type="module">
     // Set as module to allow imports
     import * as FormVerifier from "../../assets/js/form-verifs.js";
+    import * as DragDrop from "../../assets/js/drag-n-drop.js";
 
     // Get references to form's field
     let formTitle = document.getElementById("ticket-title");
@@ -117,6 +119,9 @@
         // if everything checks out
         if(formValidation){
             canPress = false;
+
+            DragDrop.syncFilesToInput();
+
             if(<?= json_encode($debugHandler->isEnabled()) ?>){ // need json_encode due to php's false being an empty character
                 FormVerifier.validateForm("Creating ticket ...");
                 // force the submission of the form, without the preventDefault (keep the form validation logic)

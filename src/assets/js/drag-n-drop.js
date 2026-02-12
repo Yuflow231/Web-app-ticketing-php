@@ -69,3 +69,13 @@ function renderFileList() {
         fileListDisplay.appendChild(listItem);
     });
 }
+
+export function syncFilesToInput() {
+    const dataTransfer = new DataTransfer();
+
+    selectedFiles.forEach(file => {
+        dataTransfer.items.add(file);
+    });
+
+    fileInput.files = dataTransfer.files;
+}

@@ -68,10 +68,10 @@ class DebugHandler {
      */
     private function addInfo(string $key, $value, bool $isRight): void {
         if($isRight) {
-            $this->debugInfoRight[$key] = $value;
+            $this->debugInfoRight[$key] = htmlspecialchars($value);
         }
         else{
-            $this->debugInfoLeft[$key] = $value;
+            $this->debugInfoLeft[$key] = htmlspecialchars($value);
         }
     }
 
@@ -107,7 +107,7 @@ class DebugHandler {
         if (!empty($_GET)) {
             foreach ($_GET as $key => $value) {
                 if ($key !== 'debug') {
-                    $this->addInfoRight("GET: {$key}", $value);
+                    $this->addInfoRight("GET: {$key}", htmlspecialchars($value));
                 }
             }
         }
@@ -121,7 +121,7 @@ class DebugHandler {
         
         if (!empty($_POST)) {
             foreach ($_POST as $key => $value) {
-                $this->addInfoRight("POST: {$key}", $value);
+                $this->addInfoRight("POST: {$key}", htmlspecialchars($value));
 
                 /*
                 // Don't display sensitive fields
@@ -132,6 +132,32 @@ class DebugHandler {
                     $this->addInfoRight("POST: {$key}", $value);
                     //$this->debugInfoLeft["POST: {$key}"] = $value;
                 }*/
+            }
+        }
+    }
+
+    /**
+     * Capture and format $_FILES data for the debug panel
+     */
+    public function addFileParams(): void {
+        if ($this->enabled && !empty($_FILES)) {
+            foreach ($_FILES as $inputName => $fileData) {
+                // Handle multiple files (array name like attachments[])
+                if (is_array($fileData['name'])) {
+                    $count = count($fileData['name']);
+                    for ($i = 0; $i < $count; $i++) {
+                        $name = $fileData['name'][$i];
+                        $size = round($fileData['size'][$i] / 1024, 2); // Convert to KB
+                        $error = $fileData['error'][$i];
+
+                        $status = ($error === UPLOAD_ERR_OK) ? "✅ OK" : "❌ Error: $error";
+                        $this->addInfoRight("FILE: {$inputName}[$i]", "{$name} ({$size} KB) - {$status}");
+                    }
+                } else {
+                    // Handle single file
+                    $name = $fileData['name'];
+                    $this->addInfoRight("FILE: {$inputName}", $name);
+                }
             }
         }
     }
