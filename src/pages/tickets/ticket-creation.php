@@ -1,3 +1,10 @@
+<?php
+    require_once("../../assets/php/debug-handler.php");
+    // Initialize debug handler
+    $debugHandler = DebugHandler::getInstance();
+
+    $debugHandler->addPostParams();
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -19,7 +26,7 @@
             <h1>Ticket creation</h1>
         </header>
 
-        <form id="ticket-form" class="form-box">
+        <form id="ticket-form" class="form-box" method="POST">
             <div class="form-2elements">
                 <div class="form-item-stacked">
                     <label for="ticket-title">Ticket's object *</label>
@@ -66,7 +73,7 @@
 
             <div class="centered" style="display: flex; gap: var(--spacing-md); justify-content: center;">
                 <button onclick="location.href = 'tickets.php<?=  $debugHandler->getDebugParam() ?>'" type="button" class="btn btn--outline">Cancel</button>
-                <button id="actions" class="btn">Create ticket</button>
+                <button id="actions" class="btn" type="submit">Create ticket</button>
             </div>
         </form>
     </main>
@@ -110,7 +117,16 @@
         // if everything checks out
         if(formValidation){
             canPress = false;
-            FormVerifier.validateForm("Creating ticket ...", "/src/pages/tickets/tickets.php<?=  $debugHandler->getDebugParam() ?>");
+            if(<?= json_encode($debugHandler->isEnabled()) ?>){ // need json_encode due to php's false being an empty character
+                FormVerifier.validateForm("Creating ticket ...");
+                // force the submission of the form, without the preventDefault (keep the form validation logic)
+                setTimeout(() => {
+                    document.getElementById("ticket-form").submit();
+                }, 1500);
+            }
+            else{
+                FormVerifier.validateForm("Creating ticket ...", "/src/pages/tickets/tickets.php<?=  $debugHandler->getDebugParam() ?>");
+            }
         }
     }
 </script>

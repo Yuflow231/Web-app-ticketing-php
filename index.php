@@ -4,6 +4,9 @@
     $debugHandler = DebugHandler::getInstance();
 
     $debugHandler->addInfoLeft('Test', 'login');
+
+    $debugHandler->addPostParams();
+
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -16,7 +19,7 @@
 </head>
 <body>
     <div id="login-box">
-        <form id="login-form" class="form-content card-wo-hover">
+        <form id="login-form" class="form-content card-wo-hover" method="POST">
             <h2 style="text-align: center">Login</h2>
 
             <div class="form-item-stacked">
@@ -49,7 +52,7 @@
 </body>
 <script type="module">
     // Set as module to allow imports
-    import * as FormVerifier from "/Web-app-ticketing-php/src/assets/js/form-verifs.js";
+    import * as FormVerifier from "./src/assets/js/form-verifs.js";
     import * as LangHandler from "./src/assets/js/language-handler.js";
     console.log("The current language is", LangHandler.getLanguage());
 
@@ -71,7 +74,6 @@
             verifyForm();
         }
     });
-
     function verifyForm(){
         let formValidation = true;
         // Clear previous highlights
@@ -84,7 +86,18 @@
         // if everything checks out
         if(formValidation){
             canPress = false;
-            FormVerifier.validateForm("Connecting ...", "./src/pages/dashBoard.php<?= $debugHandler->getDebugParam() ?>");
+
+
+            if(<?= json_encode($debugHandler->isEnabled()) ?>){ // need json_encode due to php's false being an empty character
+                FormVerifier.validateForm("Connecting ...");
+                // force the submission of the form, without the preventDefault (keep the form validation logic)
+                setTimeout(() => {
+                    document.getElementById("login-form").submit();
+                }, 1500);
+            }
+            else{
+                FormVerifier.validateForm("Connecting ...", "./src/pages/dashBoard.php<?= $debugHandler->getDebugParam() ?>");
+            }
         }
     }
 

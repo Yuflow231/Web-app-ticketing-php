@@ -121,6 +121,9 @@ class DebugHandler {
         
         if (!empty($_POST)) {
             foreach ($_POST as $key => $value) {
+                $this->addInfoRight("POST: {$key}", $value);
+
+                /*
                 // Don't display sensitive fields
                 if (in_array(strtolower($key), ['password', 'pwd', 'pass', 'token', 'secret'])) {
                     $this->addInfoRight("POST: {$key}", '[HIDDEN]');
@@ -128,7 +131,7 @@ class DebugHandler {
                 } else {
                     $this->addInfoRight("POST: {$key}", $value);
                     //$this->debugInfoLeft["POST: {$key}"] = $value;
-                }
+                }*/
             }
         }
     }

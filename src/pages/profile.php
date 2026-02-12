@@ -96,7 +96,7 @@
     window.addEventListener("DOMContentLoaded", () => {
         languageSelect.value = LangHandler.getLanguage();
 
-        debugCheck.checked = localStorage.getItem("debug") === "true";
+        debugCheck.checked = (<?= json_encode($debugHandler->isEnabled()) ?>) === true;
     });
 
     languageSelect.addEventListener("change", function() {
@@ -106,7 +106,6 @@
 
     debugCheck.addEventListener("change", function() {
         const debugEnabled = debugCheck.checked;
-        localStorage.setItem("debug", debugEnabled);
 
         // Reload the page with or without the parameter
         const currentUrl = new URL(window.location.href);

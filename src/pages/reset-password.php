@@ -4,6 +4,8 @@
     $debugHandler = DebugHandler::getInstance();
 
     $debugHandler->addInfoLeft('Test', 'passward');
+
+    $debugHandler->addPostParams();
 ?>
 <!DOCTYPE html>
 <html lang="fr">
@@ -16,7 +18,7 @@
 </head>
 <body>
     <div id="login-box">
-        <form id="reset-form" class="form-content card-wo-hover">
+        <form id="reset-form" class="form-content card-wo-hover" method="POST">
             <h2 style="text-align: center">Reset password</h2>
             <p style="text-align: center; color: var(--text-secondary); margin-bottom: var(--spacing-lg);">
                 Enter your email address to reset your password.
@@ -67,7 +69,16 @@
         // if everything checks out
         if(formValidation){
             canPress = false;
-            FormVerifier.validateForm("Sending reset link");
+            if(<?= json_encode($debugHandler->isEnabled()) ?>){ // need json_encode due to php's false being an empty character
+                FormVerifier.validateForm("Sending reset link");
+                // force the submission of the form, without the preventDefault (keep the form validation logic)
+                setTimeout(() => {
+                    document.getElementById("reset-form").submit();
+                }, 1500);
+            }
+            else{
+                FormVerifier.validateForm("Sending reset link");
+            }
         }
     }
 </script>
