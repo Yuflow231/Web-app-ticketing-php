@@ -15,8 +15,7 @@
         $debugHandler = DebugHandler::getInstance();
 
         // Add page-specific debug info
-        $debugHandler->addInfo('Test', 'Additional ');
-
+        $debugHandler->addInfoRight('Test', 'Additional ');
     ?>
 
     <!-- Navigation Bar -->

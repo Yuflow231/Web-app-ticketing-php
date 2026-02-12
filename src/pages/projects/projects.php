@@ -1,3 +1,95 @@
+<?php
+    // Import debug handler
+    require_once("../../assets/php/debug-handler.php");
+    require_once("../../assets/php/table-handler.php");
+
+    $debugHandler = DebugHandler::getInstance();
+
+    $tableRows  = [
+            [
+                    "id" => "101",
+                    "name" => "Skyblocker",
+                    "client" => [
+                            "ppRef" => "/src/assets/images/icon.png",
+                            "name" => "VicIsACat",
+                    ],
+                    "status" => "In progress",
+                    "progress" => "3%",
+                    "date" => "52/02/1996",
+            ],
+            [
+                    "id" => "102",
+                    "name" => "Customizable Player Model",
+                    "client" => [
+                            "ppRef" => "/src/assets/images/icon.png",
+                            "name" => "tom54541",
+                    ],
+                    "status" => "On Hold",
+                    "progress" => "75%",
+                    "date" => "30/01/2026",
+            ],
+            [
+                    "id" => "103",
+                    "name" => "Customizable Player Model",
+                    "client" => [
+                            "ppRef" => "/src/assets/images/icon.png",
+                            "name" => "tom54541",
+                    ],
+                    "status" => "new",
+                    "progress" => "75%",
+                    "date" => "30/01/2026",
+            ],
+            [
+                    "id" => "104",
+                    "name" => "Customizable Player Model",
+                    "client" => [
+                            "ppRef" => "/src/assets/images/icon.png",
+                            "name" => "tom54541",
+                    ],
+                    "status" => "completed",
+                    "progress" => "25%",
+                    "date" => "30/01/2026",
+            ],
+            [
+                    "id" => "105",
+                    "name" => "Customizable Player Model",
+                    "client" => [
+                            "ppRef" => "/src/assets/images/icon.png",
+                            "name" => "tom54541",
+                    ],
+                    "status" => "closed",
+                    "progress" => "86%",
+                    "date" => "30/01/2026",
+            ],
+            [
+                    "id" => "106",
+                    "name" => "Customizable Player Model",
+                    "client" => [
+                            "ppRef" => "/src/assets/images/icon.png",
+                            "name" => "tom54541",
+                    ],
+                    "status" => "Closed",
+                    "progress" => "75%",
+                    "date" => "30/01/2026",
+            ],
+            [
+                    "id" => "107",
+                    "name" => "Customizable Player Model",
+                    "client" => [
+                            "ppRef" => "/src/assets/images/icon.png",
+                            "name" => "tom54541",
+                    ],
+                    "status" => "In progress",
+                    "progress" => "86%",
+                    "date" => "30/01/2026",
+            ]
+    ];
+
+    $debugHandler->addGetParams();
+    $debugHandler->addSeparatorRight();
+
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -28,15 +120,17 @@
                 <div class="filter">
                     <label for="status">Status</label>
                     <select id="status" name="status">
-                        <option value="">All</option>
-                        <option value="In Progress">In Progress</option>
-                        <option value="On Hold">On Hold</option>
-                        <option value="Completed">Completed</option>
+                        <option value="All" <?php isSelected("status","All") ?> >All</option>
+                        <option value="New" <?php isSelected("status","New") ?>>New</option>
+                        <option value="In Progress" <?php isSelected("status","In Progress") ?>>In Progress</option>
+                        <option value="On Hold" <?php isSelected("status","On Hold") ?>>On Hold</option>
+                        <option value="Completed" <?php isSelected("status","Completed") ?>>Completed</option>
+                        <option value="Closed" <?php isSelected("status","Closed") ?>>Closed</option>
                     </select>
                 </div>
                 <div class="filter">
                     <label for="search">Research</label>
-                    <input type="text" id="search" name="search" placeholder="Research a project">
+                    <input type="text" id="search" name="search" placeholder="Research a project"">
                 </div>
             </div>
             <div>
@@ -63,167 +157,34 @@
                     </thead>
                     <tbody>
                     <!-- Projects will be loaded here -->
-                    <tr>
-                        <td data-label="ID">#101</td>
-                        <td data-label="Project name"><strong>Skyblocker</strong></td>
-                        <td data-label="Client">
-                            <div class="user-profile-inline">
-                                <img src="/src/assets/images/icon.png" class="profile-pic" alt="profile-picture" style="width:40px; height:40px;">
-                                <span style="margin-left: var(--spacing-sm)">VicIsACat</span>
-                            </div>
-                        </td>
-                        <td data-label="Status">
-                            <span class="badge green">In progress</span>
-                        </td>
-                        <td data-label="Progress">
-                            <div class="progress-container">
-                                <div class="progress-bar">
-                                    <div class="progress-fill" style="width: 3%;"></div>
+                    <!-- Project template -->
+                    <?php foreach ($tableRows  as $project): ?>
+                        <?php if (isFiltered($project, ['status'])): ?>
+                        <tr>
+                            <td data-label="ID">#<?= $project["id"] ?></td>
+                            <td data-label="Project name"><strong><?= $project["name"] ?></strong></td>
+                            <td data-label="Client">
+                                <div class="user-profile-inline">
+                                    <img src="<?= $project["client"]["ppRef"] ?>" class="profile-pic" alt="profile-picture" style="width:40px; height:40px;">
+                                    <span style="margin-left: var(--spacing-sm)"><?= $project["client"]["name"] ?></span>
                                 </div>
-                                <div class="progress-percentage">3%</div>
-                            </div>
-                        </td>
-                        <td data-label="Creation date">52/02/1996</td>
-                        <td data-label="Actions"><a href="./project-details.php<?=  $debugHandler->getDebugParam() ?>" class="icon"><i class="fa-solid fa-arrow-up-right-from-square"></i></a></td>
-                    </tr>
-                    <tr>
-                        <td data-label="ID">#102</td>
-                        <td data-label="Project name"><strong>Customizable Player Model</strong></td>
-                        <td data-label="Client">
-                            <div class="user-profile-inline">
-                                <img src="/src/assets/images/icon.png" class="profile-pic" alt="profile-picture" style="width:40px; height:40px;">
-                                <span style="margin-left: var(--spacing-sm)">tom54541</span>
-                            </div>
-                        </td>
-                        <td data-label="Status">
-                            <span class="badge orange">On Hold</span>
-                        </td>
-                        <td data-label="Progress">
-                            <div class="progress-container">
-                                <div class="progress-bar">
-                                    <div class="progress-fill" style="width: 75%;"></div>
+                            </td>
+                            <td data-label="Status">
+                                <span class="badge <?php setBadgeColor($project["status"]) ?> "><?= $project["status"] ?></span>
+                            </td>
+                            <td data-label="Progress">
+                                <div class="progress-container">
+                                    <div class="progress-bar">
+                                        <div class="progress-fill" style="width: <?= $project["progress"] ?>;"></div>
+                                    </div>
+                                    <div class="progress-percentage"><?= $project["progress"] ?></div>
                                 </div>
-                                <div class="progress-percentage">75%</div>
-                            </div>
-                        </td>
-                        <td data-label="Creation date">30/01/2026</td>
-                        <td data-label="Actions"><a href="./project-details.php<?=  $debugHandler->getDebugParam() ?>" class="icon"><i class="fa-solid fa-arrow-up-right-from-square"></i></a></td>
-                    </tr>
-                    <tr>
-                        <td data-label="ID">#102</td>
-                        <td data-label="Project name"><strong>Customizable Player Model</strong></td>
-                        <td data-label="Client">
-                            <div class="user-profile-inline">
-                                <img src="/src/assets/images/icon.png" class="profile-pic" alt="profile-picture" style="width:40px; height:40px;">
-                                <span style="margin-left: var(--spacing-sm)">tom54541</span>
-                            </div>
-                        </td>
-                        <td data-label="Status">
-                            <span class="badge orange">On Hold</span>
-                        </td>
-                        <td data-label="Progress">
-                            <div class="progress-container">
-                                <div class="progress-bar">
-                                    <div class="progress-fill" style="width: 75%;"></div>
-                                </div>
-                                <div class="progress-percentage">75%</div>
-                            </div>
-                        </td>
-                        <td data-label="Creation date">30/01/2026</td>
-                        <td data-label="Actions"><a href="./project-details.php<?=  $debugHandler->getDebugParam() ?>" class="icon"><i class="fa-solid fa-arrow-up-right-from-square"></i></a></td>
-                    </tr>
-                    <tr>
-                        <td data-label="ID">#102</td>
-                        <td data-label="Project name"><strong>Customizable Player Model</strong></td>
-                        <td data-label="Client">
-                            <div class="user-profile-inline">
-                                <img src="/src/assets/images/icon.png" class="profile-pic" alt="profile-picture" style="width:40px; height:40px;">
-                                <span style="margin-left: var(--spacing-sm)">tom54541</span>
-                            </div>
-                        </td>
-                        <td data-label="Status">
-                            <span class="badge orange">On Hold</span>
-                        </td>
-                        <td data-label="Progress">
-                            <div class="progress-container">
-                                <div class="progress-bar">
-                                    <div class="progress-fill" style="width: 75%;"></div>
-                                </div>
-                                <div class="progress-percentage">75%</div>
-                            </div>
-                        </td>
-                        <td data-label="Creation date">30/01/2026</td>
-                        <td data-label="Actions"><a href="project-details.php<?=  $debugHandler->getDebugParam() ?>" class="icon"><i class="fa-solid fa-arrow-up-right-from-square"></i></a></td>
-                    </tr>
-                    <tr>
-                        <td data-label="ID">#102</td>
-                        <td data-label="Project name"><strong>Customizable Player Model</strong></td>
-                        <td data-label="Client">
-                            <div class="user-profile-inline">
-                                <img src="/src/assets/images/icon.png" class="profile-pic" alt="profile-picture" style="width:40px; height:40px;">
-                                <span style="margin-left: var(--spacing-sm)">tom54541</span>
-                            </div>
-                        </td>
-                        <td data-label="Status">
-                            <span class="badge orange">On Hold</span>
-                        </td>
-                        <td data-label="Progress">
-                            <div class="progress-container">
-                                <div class="progress-bar">
-                                    <div class="progress-fill" style="width: 75%;"></div>
-                                </div>
-                                <div class="progress-percentage">75%</div>
-                            </div>
-                        </td>
-                        <td data-label="Creation date">30/01/2026</td>
-                        <td data-label="Actions"><a href="project-details.php<?=  $debugHandler->getDebugParam() ?>" class="icon"><i class="fa-solid fa-arrow-up-right-from-square"></i></a></td>
-                    </tr>
-                    <tr>
-                        <td data-label="ID">#102</td>
-                        <td data-label="Project name"><strong>Customizable Player Model</strong></td>
-                        <td data-label="Client">
-                            <div class="user-profile-inline">
-                                <img src="/src/assets/images/icon.png" class="profile-pic" alt="profile-picture" style="width:40px; height:40px;">
-                                <span style="margin-left: var(--spacing-sm)">tom54541</span>
-                            </div>
-                        </td>
-                        <td data-label="Status">
-                            <span class="badge orange">On Hold</span>
-                        </td>
-                        <td data-label="Progress">
-                            <div class="progress-container">
-                                <div class="progress-bar">
-                                    <div class="progress-fill" style="width: 75%;"></div>
-                                </div>
-                                <div class="progress-percentage">75%</div>
-                            </div>
-                        </td>
-                        <td data-label="Creation date">30/01/2026</td>
-                        <td data-label="Actions"><a href="project-details.php<?=  $debugHandler->getDebugParam() ?>" class="icon"><i class="fa-solid fa-arrow-up-right-from-square"></i></a></td>
-                    </tr>
-                    <tr>
-                        <td data-label="ID">#102</td>
-                        <td data-label="Project name"><strong>Customizable Player Model</strong></td>
-                        <td data-label="Client">
-                            <div class="user-profile-inline">
-                                <img src="/src/assets/images/icon.png" class="profile-pic" alt="profile-picture" style="width:40px; height:40px;">
-                                <span style="margin-left: var(--spacing-sm)">tom54541</span>
-                            </div>
-                        </td>
-                        <td data-label="Status">
-                            <span class="badge orange">On Hold</span>
-                        </td>
-                        <td data-label="Progress">
-                            <div class="progress-container">
-                                <div class="progress-bar">
-                                    <div class="progress-fill" style="width: 75%;"></div>
-                                </div>
-                                <div class="progress-percentage">75%</div>
-                            </div>
-                        </td>
-                        <td data-label="Creation date">30/01/2026</td>
-                        <td data-label="Actions"><a href="project-details.php<?=  $debugHandler->getDebugParam() ?>" class="icon"><i class="fa-solid fa-arrow-up-right-from-square"></i></a></td>
-                    </tr>
+                            </td>
+                            <td data-label="Creation date"><?= $project["date"] ?></td>
+                            <td data-label="Actions"><a href="./project-details.php<?=  $debugHandler->getDebugParam() ?>" class="icon"><i class="fa-solid fa-arrow-up-right-from-square"></i></a></td>
+                        </tr>
+                        <?php endif; ?>
+                    <?php addCount(); endforeach; ?>
                     </tbody>
                 </table>
             </div>

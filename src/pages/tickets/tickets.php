@@ -1,3 +1,47 @@
+<?php
+    // Import debug handler
+    require_once("../../assets/php/debug-handler.php");
+    require_once("../../assets/php/table-handler.php");
+    $debugHandler = DebugHandler::getInstance();
+
+    $tableRows =[
+            [
+                    "id" => "101",
+                    "title" => "Customizable UI bars",
+                    "project" => "Skyblocker",
+                    "status" => "In Progress",
+                    "priority" => "Medium",
+                    "clients" => [
+                            "client1" => "../../assets/images/icon.png",
+                    ]
+            ],
+            [
+                    "id" => "102",
+                    "title" => "Fix Render for 1.21.11",
+                    "project" => "Customizable Player Model",
+                    "status" => "On Hold",
+                    "priority" => "High",
+                    "clients" => [
+                            "client1" => "../../assets/images/icon.png",
+                            "client2" => "../../assets/images/icon.png",
+                    ]
+            ],
+            [
+                    "id" => "105",
+                    "title" => "Implement Dark Mode",
+                    "project" => "Skyblocker",
+                    "status" => "New",
+                    "priority" => "Low",
+                    "clients" => [
+                            "client1" => "../../assets/images/icon.png",
+                    ]
+            ]
+    ];
+
+    $debugHandler->addGetParams();
+    $debugHandler->addSeparatorRight();
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -27,22 +71,23 @@
             <div class="page-header-line">
                 <div style="display: flex; gap: var(--spacing-lg); flex-wrap: wrap;">
                     <div class="filter">
-                        <label for="priority">Priority</label>
-                        <select id="priority" name="priority">
-                            <option value="">All</option>
-                            <option value="High">High</option>
-                            <option value="Medium">Medium</option>
-                            <option value="Low">Low</option>
+                        <label for="status">Status</label>
+                        <select id="status" name="status">
+                            <option value="All" <?php isSelected("status","All") ?>>All</option>
+                            <option value="Open" <?php isSelected("status","New") ?>>New</option>
+                            <option value="In Progress" <?php isSelected("status","In Progress") ?>>In Progress</option>
+                            <option value="On Hold" <?php isSelected("status","On Hold") ?>>On Hold</option>
+                            <option value="Completed" <?php isSelected("status","Completed") ?>>Completed</option>
+                            <option value="Closed" <?php isSelected("status","Closed") ?>>Closed</option>
                         </select>
                     </div>
                     <div class="filter">
-                        <label for="status">Status</label>
-                        <select id="status" name="status">
-                            <option value="">All</option>
-                            <option value="Open">New</option>
-                            <option value="In Progress">In Progress</option>
-                            <option value="On Hold">On Hold</option>
-                            <option value="Closed">Closed</option>
+                        <label for="priority">Priority</label>
+                        <select id="priority" name="priority">
+                            <option value="All" <?php isSelected("priority","All") ?> >All</option>
+                            <option value="High" <?php isSelected("priority","High") ?>>High</option>
+                            <option value="Medium" <?php isSelected("priority","Medium") ?>>Medium</option>
+                            <option value="Low" <?php isSelected("priority","Low") ?>>Low</option>
                         </select>
                     </div>
                 </div>
@@ -75,46 +120,25 @@
                     </thead>
                     <tbody id="tickets-tbody">
                     <!-- Tickets will be loaded here -->
+                    <?php foreach ($tableRows as $ticket) : ?>
+                        <?php if (isFiltered($ticket, ['status', 'priority'])): ?>
                         <tr>
-                            <td data-label="ID">#101</td>
-                            <td data-label="Title"><strong>Customizable UI bars</strong></td>
-                            <td data-label="Project">Skyblocker</td>
-                            <td data-label="Status"><span class="badge green">In Progress</span></td>
-                            <td data-label="Priority"><span class="badge orange">Medium</span></td>
+                            <td data-label="ID">#<?= $ticket["id"] ?></td>
+                            <td data-label="Title"><strong><?= $ticket["title"] ?></strong></td>
+                            <td data-label="Project"><?= $ticket["project"] ?></td>
+                            <td data-label="Status"><span class="badge  <?php setBadgeColor($ticket["status"]) ?> "><?= $ticket["status"] ?></span></td>
+                            <td data-label="Priority"><span class="badge  <?php setBadgeColor($ticket["priority"]) ?> "><?= $ticket["priority"] ?></span></td>
                             <td data-label="Assigned">
                                 <div class="avatar-line">
-                                    <img src="../../assets/images/icon.png" title="Unassigned" alt="profile-picture" class="profile-pic-mini">
+                                    <?php foreach ($ticket["clients"] as $clientPP) : ?>
+                                    <img src="<?= $clientPP ?>" title="Unassigned" alt="profile-picture" class="profile-pic-mini">
+                                    <?php endforeach; ?>
                                 </div>
                             </td>
                             <td data-label="Actions"><a href="./ticket-details.php<?=  $debugHandler->getDebugParam() ?>" class="icon"><i class="fa-solid fa-arrow-up-right-from-square"></i></a></td>
                         </tr>
-                        <tr>
-                            <td data-label="ID">#102</td>
-                            <td data-label="Title"><strong>Fix Render for 1.21.11</strong></td>
-                            <td data-label="Project">Customizable Player Model</td>
-                            <td data-label="Status"><span class="badge orange">On Hold</span></td>
-                            <td data-label="Priority"><span class="badge red">High</span></td>
-                            <td data-label="Assigned">
-                                <div class="avatar-line">
-                                    <img src="../../assets/images/icon.png" title="Unassigned" alt="profile-picture" class="profile-pic-mini">
-                                    <img src="../../assets/images/icon.png" title="Unassigned" alt="profile-picture" class="profile-pic-mini">
-                                </div>
-                            </td>
-                            <td data-label="Actions"><a href="./ticket-details.php<?=  $debugHandler->getDebugParam() ?>" class="icon"><i class="fa-solid fa-arrow-up-right-from-square"></i></a></td>
-                        </tr>
-                        <tr>
-                            <td data-label="ID">#105</td>
-                            <td data-label="Title"><strong>Implement Dark Mode</strong></td>
-                            <td data-label="Project">Skyblocker</td>
-                            <td data-label="Status"><span class="badge blue">New</span></td>
-                            <td data-label="Priority"><span class="badge green">Low</span></td>
-                            <td data-label="Assigned">
-                                <div class="avatar-line">
-                                    <img src="../../assets/images/icon.png" title="Unassigned" alt="profile-picture" class="profile-pic-mini">
-                                </div>
-                            </td>
-                            <td data-label="Actions"><a href="./ticket-details.php<?=  $debugHandler->getDebugParam() ?>" class="icon"><i class="fa-solid fa-arrow-up-right-from-square"></i></a></td>
-                        </tr>
+                        <?php endif; ?>
+                    <?php addCount(); endforeach; ?>
                     </tbody>
                 </table>
             </div>

@@ -3,9 +3,7 @@
     // Initialize debug handler
     $debugHandler = DebugHandler::getInstance();
 
-    $debugHandler->addInfo('Test', 'passward');
-
-    $debugHandler->renderPanel();
+    $debugHandler->addInfoLeft('Test', 'passward');
 ?>
 <!DOCTYPE html>
 <html lang="fr">

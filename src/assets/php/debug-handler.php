@@ -14,7 +14,9 @@ class DebugHandler {
     private static ?DebugHandler $instance = null;
     private bool $enabled;
     private string $debugParam;
-    private array $debugInfo;
+    private array $debugInfoLeft;
+    private array $debugInfoRight;
+    private bool $hasRendered = false;
 
     /**
      * Private constructor to prevent direct instantiation
@@ -22,11 +24,14 @@ class DebugHandler {
     private function __construct() {
         $this->enabled = isset($_GET["debug"]) && $_GET["debug"] == "1";
         $this->debugParam = $this->enabled ? "?debug=1" : "";
-        $this->debugInfo = [];
+        $this->debugInfoLeft = [];
+        $this->debugInfoRight = [];
 
         if ($this->enabled) {
             $this->collectDefaultInfo();
         }
+
+        register_shutdown_function([$this, 'autoRender']);
     }
 
     /**
@@ -61,15 +66,36 @@ class DebugHandler {
      * @param string $key The label for the debug info
      * @param mixed $value The value to display
      */
-    public function addInfo(string $key, $value): void {
-        $this->debugInfo[$key] = $value;
+    private function addInfo(string $key, $value, bool $isRight): void {
+        if($isRight) {
+            $this->debugInfoRight[$key] = $value;
+        }
+        else{
+            $this->debugInfoLeft[$key] = $value;
+        }
     }
-    
+
+    public function addInfoLeft(string $key, $value): void {
+        $this->addInfo($key, $value, false);
+    }
+    public function addSeparatorLeft(): void {
+        $this->addInfoLeft("--------","--------");
+    }
+
+    public function addInfoRight(string $key, $value): void {
+        $this->addInfo($key, $value, true);
+    }
+    public function addSeparatorRight(): void {
+        $this->addInfoRight("--------","--------");
+    }
+
+
+
     /**
      * Collect default debug information
      */
     private function collectDefaultInfo(): void {
-        $this->debugInfo['Full Path'] = $_SERVER['PHP_SELF'];
+        $this->debugInfoLeft['Full Path'] = $_SERVER['PHP_SELF'];
     }
     
     /**
@@ -81,7 +107,7 @@ class DebugHandler {
         if (!empty($_GET)) {
             foreach ($_GET as $key => $value) {
                 if ($key !== 'debug') {
-                    $this->debugInfo["GET: {$key}"] = $value;
+                    $this->addInfoRight("GET: {$key}", $value);
                 }
             }
         }
@@ -97,9 +123,11 @@ class DebugHandler {
             foreach ($_POST as $key => $value) {
                 // Don't display sensitive fields
                 if (in_array(strtolower($key), ['password', 'pwd', 'pass', 'token', 'secret'])) {
-                    $this->debugInfo["POST: {$key}"] = '[HIDDEN]';
+                    $this->addInfoRight("POST: {$key}", '[HIDDEN]');
+                    //$this->debugInfoLeft["POST: {$key}"] = '[HIDDEN]';
                 } else {
-                    $this->debugInfo["POST: {$key}"] = is_array($value) ? json_encode($value) : $value;
+                    $this->addInfoRight("POST: {$key}", $value);
+                    //$this->debugInfoLeft["POST: {$key}"] = $value;
                 }
             }
         }
@@ -108,26 +136,46 @@ class DebugHandler {
     /**
      * Render the debug panel HTML
      */
-    public function renderPanel():void {
+    private function renderPanel():void {
         // skip the render when not enabled
-        if (!$this->enabled) {
-            return;
+        if ($this->hasRendered || !$this->enabled) {
+            return; // Skip if already rendered
         }
+        $this->hasRendered = true; // Mark as rendered
         
         $html = "<div class='debug-panel'>\n";
-        
-        foreach ($this->debugInfo as $key => $value) {
-            $html .= "  <p class='debug-element'><strong>{$key}:</strong> {$value}</p>\n";
+
+        if(!empty($this->debugInfoLeft)){
+            $html .= "<div class='debug-panel-left'>\n";
+            foreach ($this->debugInfoLeft as $key => $value) {
+                $html .= "  <p class='debug-element'><strong>{$key}:</strong> {$value}</p>\n";
+            }
+            $html .= "</div>\n";
         }
-        
+        if(!empty($this->debugInfoRight)){
+            $html .= "<div class='debug-panel-right'>\n";
+            foreach ($this->debugInfoRight as $key => $value) {
+               $html .= "  <p class='debug-element'><strong>{$key}:</strong> {$value}</p>\n";
+            }
+            $html .= "</div>\n";
+        }
+
         $html .= "</div>\n";
         echo $html;
-
     }
+
+    // Auto-render method
+    public function autoRender(): void {
+        if (!$this->hasRendered) {
+            $this->renderPanel(); // Renders at END of page
+        }
+    }
+
     /**
      * Clear all debug info
      */
     public function clearInfo(): void {
-        $this->debugInfo = [];
+        $this->debugInfoLeft = [];
+        $this->debugInfoRight = [];
     }
 }

@@ -10,8 +10,8 @@
 
     // Add additional debug info
 
-    $debugHandler->addInfo("Current page",  $pageName);
-    $debugHandler->addInfo("Page's prefix",  $pagePrefix);
+    $debugHandler->addInfoLeft("Current page",  $pageName);
+    $debugHandler->addInfoLeft("Page's prefix",  $pagePrefix);
 
     // Get debug parameter for URLs
     $debug = $debugHandler->getDebugParam();
@@ -29,9 +29,6 @@
 
         echo "<a href='{$refLink}{$debug}'{$activeClass}>";
     }
-
-    // Render debug panel
-    $debugHandler->renderPanel();
 ?>
 
 <nav class="navigation">

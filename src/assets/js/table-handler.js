@@ -36,7 +36,7 @@ export class TableManager {
 
         // Filter Dropdowns
         this.filterSelects.forEach(select => {
-            select.addEventListener('change', () => this.handleFilter());
+            select.addEventListener('change', (event) => this.addParam(event));
         });
 
         // Pagination Buttons
@@ -46,36 +46,29 @@ export class TableManager {
         this.render();
     }
 
+    addParam(event){
+        // Access the element's ID and current Value
+        const elementId = event.target.id;
+        const elementValue = event.target.value;
+
+        // get the current url for later reload
+        const url = new URL(location.href);
+
+        url.searchParams.set(elementId, elementValue);
+
+        location.href = url.toString();
+    }
+
     handleFilter() {
         // get the search field input
         const query = this.searchInput.value.toLowerCase();
-
-        // Get all filter available in the current page, and get their value
-        const activeFilters = {}; // init a map for later uses
-        this.filterSelects.forEach(select => {
-            activeFilters[select.id] = select.value;
-        });
-
-        // look at the filter and return in "this.filteredRows" the one to render
 
         // filter() returns the row solely when it gets true as the returned value (callback shenanigans)
         // when getting false, it skips the current element (in this case the row that doesn't match the filters)
         this.filteredRows = this.allRows.filter(row => {
             // check Search filter (checks all text in the row)
-            const matchesSearch = row.innerText.toLowerCase().includes(query); // the whole line is considered a single string here
-
-            // check Select filters, running this for each filter found
-            const matchesFilters = Object.keys(activeFilters).every(id => {
-                // "All" selected, don't check anything
-                if (!activeFilters[id]) return true;
-
-                // Find cell that matches the filter category thanks to the data-label
-                const cell = row.querySelector(`[data-label*="${id}" i]`); // i -> avoid case sensitivity
-                // if a corresponding cell is found, compare its value with what have been saved inside activeFilters
-                return cell ? cell.innerText.trim().toLowerCase() === activeFilters[id].toLowerCase() : true;
-            });
-
-            return matchesSearch && matchesFilters;
+             // the whole line is considered a single string here
+            return row.innerText.toLowerCase().includes(query) ;
         });
 
         // Reset to page 1 on new search
