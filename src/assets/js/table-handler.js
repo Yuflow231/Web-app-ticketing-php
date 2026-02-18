@@ -56,6 +56,8 @@ export class TableManager {
 
         url.searchParams.set(elementId, elementValue);
 
+        url.hash = 'table';
+
         location.href = url.toString();
     }
 

@@ -9,11 +9,11 @@
         $tagLower = strtolower($tag);
         $color = "blue"; // Default
 
-        if ($tagLower === "in progress" || $tagLower === "completed" || $tagLower === "high") {
+        if ($tagLower === "in progress" || $tagLower === "completed" || $tagLower === "low" || $tagLower === "included") {
             $color = "green";
         } elseif ($tagLower === "on hold" || $tagLower === "medium") {
             $color = "orange";
-        } elseif ($tagLower === "closed" || $tagLower === "low") {
+        } elseif ($tagLower === "closed" || $tagLower === "high" || $tagLower === "billed") {
             $color = "red";
         }
 
@@ -35,6 +35,9 @@
 
     function isFiltered(array $row, array $filterKeys): bool {
         foreach ($filterKeys as $key) {
+            if(empty($_GET[$key])) {
+                return true;
+            }
             $filterValue = strtolower(htmlspecialchars($_GET[$key]));
 
             if ($filterValue === "all" || $filterValue === "") {

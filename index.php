@@ -1,5 +1,5 @@
 <?php
-    require_once("src/assets/php/debug-handler.php");
+    require_once("./src/assets/php/debug-handler.php");
     // Initialize debug handler
     $debugHandler = DebugHandler::getInstance();
 

@@ -10,7 +10,7 @@
                     "id" => "101",
                     "name" => "Skyblocker",
                     "client" => [
-                            "ppRef" => "/src/assets/images/icon.png",
+                            "ppRef" => "../../assets/images/icon.png",
                             "name" => "VicIsACat",
                     ],
                     "status" => "In progress",
@@ -21,7 +21,7 @@
                     "id" => "102",
                     "name" => "Customizable Player Model",
                     "client" => [
-                            "ppRef" => "/src/assets/images/icon.png",
+                            "ppRef" => "../../assets/images/icon.png",
                             "name" => "tom54541",
                     ],
                     "status" => "On Hold",
@@ -32,7 +32,7 @@
                     "id" => "103",
                     "name" => "Customizable Player Model",
                     "client" => [
-                            "ppRef" => "/src/assets/images/icon.png",
+                            "ppRef" => "../../assets/images/icon.png",
                             "name" => "tom54541",
                     ],
                     "status" => "New",
@@ -43,7 +43,7 @@
                     "id" => "104",
                     "name" => "Customizable Player Model",
                     "client" => [
-                            "ppRef" => "/src/assets/images/icon.png",
+                            "ppRef" => "../../assets/images/icon.png",
                             "name" => "tom54541",
                     ],
                     "status" => "Completed",
@@ -54,7 +54,7 @@
                     "id" => "105",
                     "name" => "Customizable Player Model",
                     "client" => [
-                            "ppRef" => "/src/assets/images/icon.png",
+                            "ppRef" => "../../assets/images/icon.png",
                             "name" => "tom54541",
                     ],
                     "status" => "Closed",
@@ -65,7 +65,7 @@
                     "id" => "106",
                     "name" => "Customizable Player Model",
                     "client" => [
-                            "ppRef" => "/src/assets/images/icon.png",
+                            "ppRef" => "../../assets/images/icon.png",
                             "name" => "tom54541",
                     ],
                     "status" => "Closed",
@@ -76,7 +76,7 @@
                     "id" => "107",
                     "name" => "Customizable Player Model",
                     "client" => [
-                            "ppRef" => "/src/assets/images/icon.png",
+                            "ppRef" => "../../assets/images/icon.png",
                             "name" => "tom54541",
                     ],
                     "status" => "In Progress",
@@ -143,7 +143,7 @@
         <!-- Projects section -->
         <section class="project">
             <div class="table-card">
-                <table>
+                <table id="table">
                     <thead>
                     <tr>
                         <th>ID</th>
@@ -200,8 +200,8 @@
     </main>
 </body>
 <script type="module">
-    import * as LangHandler from "/src/assets/js/language-handler.js";
-    import { TableManager } from "/src/assets/js/table-handler.js";
+    import * as LangHandler from "../../assets/js/language-handler.js";
+    import { TableManager } from "../../assets/js/table-handler.js";
 
     // Initialize for projects table (using 5 rows per page)
     new TableManager('.project table', 5);

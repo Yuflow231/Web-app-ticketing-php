@@ -2,7 +2,7 @@
 Thanks to Victor BRANCHU for the logic used within this file
  */
 
-import Toast from "/src/assets/js/toast.js";
+import Toast from "./toast.js";
 
 // regex to check mail validity
 const regexMail = "^[^\\s@]+@[^\\s@]+\\.[^\\s@]+$"

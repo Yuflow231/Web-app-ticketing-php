@@ -1,3 +1,13 @@
+<?php
+
+    $currentRole = "Administrator";
+    function isAdmin(string $role):bool
+    {
+        $roleLower = strtolower($role);
+
+        return $roleLower === "administrator";
+    }
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -68,10 +78,12 @@
                             <option value="fr">French</option>
                         </select>
                     </div>
+                    <?php if(isAdmin($currentRole)): ?>
                     <div class="form-item-stacked">
                         <label for="debug">Debug mode</label>
                         <input type="checkbox" id="debug">
                     </div>
+                    <?php endif; ?>
                 </section>
 
                 <section class="detail-card">

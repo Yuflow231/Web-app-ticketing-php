@@ -11,6 +11,7 @@
                     "project" => "Skyblocker",
                     "status" => "In Progress",
                     "priority" => "Medium",
+                    "type" => "Included",
                     "clients" => [
                             "client1" => "../../assets/images/icon.png",
                     ]
@@ -21,6 +22,7 @@
                     "project" => "Customizable Player Model",
                     "status" => "On Hold",
                     "priority" => "High",
+                    "type" => "Billed",
                     "clients" => [
                             "client1" => "../../assets/images/icon.png",
                             "client2" => "../../assets/images/icon.png",
@@ -32,6 +34,7 @@
                     "project" => "Skyblocker",
                     "status" => "New",
                     "priority" => "Low",
+                    "type" => "Billed",
                     "clients" => [
                             "client1" => "../../assets/images/icon.png",
                     ]
@@ -74,7 +77,7 @@
                         <label for="status">Status</label>
                         <select id="status" name="status">
                             <option value="All" <?php isSelected("status","All") ?>>All</option>
-                            <option value="Open" <?php isSelected("status","New") ?>>New</option>
+                            <option value="New" <?php isSelected("status","New") ?>>New</option>
                             <option value="In Progress" <?php isSelected("status","In Progress") ?>>In Progress</option>
                             <option value="On Hold" <?php isSelected("status","On Hold") ?>>On Hold</option>
                             <option value="Completed" <?php isSelected("status","Completed") ?>>Completed</option>
@@ -88,6 +91,14 @@
                             <option value="High" <?php isSelected("priority","High") ?>>High</option>
                             <option value="Medium" <?php isSelected("priority","Medium") ?>>Medium</option>
                             <option value="Low" <?php isSelected("priority","Low") ?>>Low</option>
+                        </select>
+                    </div>
+                    <div class="filter">
+                        <label for="type">Type</label>
+                        <select id="type" name="type">
+                            <option value="All" <?php isSelected("type","All") ?> >All</option>
+                            <option value="Included" <?php isSelected("type","Included") ?>>Included</option>
+                            <option value="Billed" <?php isSelected("type","Billed") ?>>Billed</option>
                         </select>
                     </div>
                 </div>
@@ -106,7 +117,7 @@
         <!-- Tickets Section -->
         <section class="tickets">
             <div class="table-card">
-                <table>
+                <table id="table">
                     <thead>
                     <tr>
                         <th>ID</th>
@@ -114,6 +125,7 @@
                         <th>Project</th>
                         <th>Status</th>
                         <th>Priority</th>
+                        <th>Type</th>
                         <th>Assigned</th>
                         <th>Actions</th>
                     </tr>
@@ -121,13 +133,14 @@
                     <tbody id="tickets-tbody">
                     <!-- Tickets will be loaded here -->
                     <?php foreach ($tableRows as $ticket) : ?>
-                        <?php if (isFiltered($ticket, ['status', 'priority'])): ?>
+                        <?php if (isFiltered($ticket, ['status', 'priority', 'type'])): ?>
                         <tr>
                             <td data-label="ID">#<?= $ticket["id"] ?></td>
                             <td data-label="Title"><strong><?= $ticket["title"] ?></strong></td>
                             <td data-label="Project"><?= $ticket["project"] ?></td>
                             <td data-label="Status"><span class="badge  <?php setBadgeColor($ticket["status"]) ?> "><?= $ticket["status"] ?></span></td>
                             <td data-label="Priority"><span class="badge  <?php setBadgeColor($ticket["priority"]) ?> "><?= $ticket["priority"] ?></span></td>
+                            <td data-label="Priority"><span class="badge  <?php setBadgeColor($ticket["type"]) ?> "><?= $ticket["type"] ?></span></td>
                             <td data-label="Assigned">
                                 <div class="avatar-line">
                                     <?php foreach ($ticket["clients"] as $clientPP) : ?>

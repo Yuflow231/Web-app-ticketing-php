@@ -1,3 +1,25 @@
+<?php require_once("../../assets/php/table-handler.php");
+
+    $info =[
+            "id" => "101",
+            "title" => "Customizable UI bars",
+            "project" => "Skyblocker",
+            "description" => "Create modulable and customizable bars to replace the default bars of Hypixel Skyblock",
+            "status" => "In Progress",
+            "priority" => "Medium",
+            "type" => "Included",
+            "spent" => "4.5 Hours",
+            "estimated" => "8.0 Hours",
+            "collaborators" => [
+                    "client1" => [
+                            "pic" => "../../assets/images/icon.png",
+                            "role" => "cat",
+                            "first" => "VicIsCat",
+                            "last" => "",
+                            ]
+            ]
+    ]
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -15,36 +37,34 @@
     <!-- Page content -->
     <main class="main-content">
         <header class="page-header">
-            <h1>Ticket #101: Customizable UI bars</h1>
+            <h1>Ticket #<?= $info["id"] ?>: <?= $info["title"] ?></h1>
         </header>
-
-        <div class="ticket-lifecycle-container">
-            <div class="lifecycle-step achieved">New</div>
-            <div class="lifecycle-step achieved">To be Approved</div>
-            <div class="lifecycle-step current">In Progress</div>
-            <div class="lifecycle-step">Completed</div>
-        </div>
 
         <div class="detail-container">
             <section class="detail-card">
                 <div class="detail-item">
                     <label>Title</label>
-                    <h2>Customizable UI bars</h2>
+                    <h2><?= $info["title"] ?></h2>
+                </div>
+
+                <div class="detail-item" >
+                    <label>Associated project</label>
+                    <p><?= $info["project"] ?></p>
                 </div>
 
                 <div class="detail-item" >
                     <label>Detailed Description</label>
-                    <p>Create modulable and customizable bars to replace the default bars of Hypixel Skyblock</p>
+                    <p><?= $info["description"] ?></p>
                 </div>
 
                 <div class="inline-elements">
                     <div class="detail-item">
                         <label>Actual Time Spent</label>
-                        <p>4.5 Hours</p>
+                        <p><?= $info["spent"] ?></p>
                     </div>
                     <div class="detail-item">
                         <label>Estimated Time</label>
-                        <p>8.0 Hours</p>
+                        <p><?= $info["estimated"] ?></p>
                     </div>
                 </div>
 
@@ -59,31 +79,33 @@
                     <h2>Classification</h2>
                     <div class="detail-item">
                         <label>Status</label>
-                        <span class="badge green">In Progress</span>
+                        <span class="badge <?php setBadgeColor($info["status"]) ?>"><?= $info["status"] ?></span>
                     </div>
                     <div class="detail-item">
                         <label>Priority</label>
-                        <span class="badge orange">Medium</span>
+                        <span class="badge <?php setBadgeColor($info["priority"]) ?>"><?= $info["priority"] ?></span>
                     </div>
                     <div class="detail-item">
                         <label>Type</label>
-                        <span>Included</span>
+                        <span class="badge <?php setBadgeColor($info["type"]) ?>"><?= $info["type"] ?></span>
                     </div>
                 </section>
 
                 <section class="detail-card">
                     <h2>Assigned Collaborators</h2>
                     <div id="collaborator-list">
+                        <?php foreach ($info["collaborators"] as $user): ?>
                         <div class="user-profile-inline" style="margin-bottom: var(--spacing-sm);">
-                            <img src="/src/assets/images/icon.png" alt="User Profile" class="profile-pic" >
+                            <img src="<?= $user["pic"] ?>" alt="User Profile" class="profile-pic" >
                             <div class="item-stacked" style="margin-left: var(--spacing-sm);">
                                 <div>
-                                    <span class="username" data-type="first-name">VicIsACat</span>
-                                    <span class="username" data-type="last-name"></span>
+                                    <span class="username" data-type="first-name"><?= $user["first"] ?></span>
+                                    <span class="username" data-type="last-name"><?= $user["last"] ?></span>
                                 </div>
-                                <span class="user-role">Cat</span>
+                                <span class="user-role"><?= $user["role"] ?></span>
                             </div>
                         </div>
+                        <?php endforeach; ?>
                     </div>
                 </section>
             </div>
