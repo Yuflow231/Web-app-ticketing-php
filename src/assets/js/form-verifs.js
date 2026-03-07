@@ -72,6 +72,14 @@ export function verifyEmptyness(error) {
     }
 }
 
+export function verifyLength(error) {
+    return{
+        predicate : (input) => input.value.length < 10,
+        message : error,
+    }
+}
+
+
 export function verifyFile(error) {
     return{
         predicate : (input) => input.childElementCount < 1,
