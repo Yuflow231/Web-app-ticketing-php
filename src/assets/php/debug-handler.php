@@ -60,7 +60,11 @@ class DebugHandler {
     public function getDebugParam(): string {
         return $this->debugParam;
     }
-    
+
+    public function getDebugAppend(): string {
+        return $this->enabled ? "&debug=1" : "";
+    }
+
     /**
      * Add custom debug information
      * @param string $key The label for the debug info
@@ -97,7 +101,43 @@ class DebugHandler {
     private function collectDefaultInfo(): void {
         $this->debugInfoLeft['Full Path'] = $_SERVER['PHP_SELF'];
     }
-    
+
+    public function getDebugForwardParams(array $data): string {
+        if (!$this->enabled) return "";
+        $parts = [];
+        foreach ($data as $key => $value) {
+            $parts[] = "dbg_" . urlencode($key) . "=" . urlencode($value);
+        }
+        return $parts ? "&" . implode("&", $parts) : "";
+    }
+
+    /**
+     * Pick up any dbg_* GET params forwarded from a previous redirect
+     * and display them in the debug panel.
+     */
+    public function addForwardedParams(): void {
+        if (!$this->enabled) return;
+        foreach ($_GET as $key => $value) {
+            if (str_starts_with($key, "dbg_")) {
+                $label = substr($key, 4); // strip "dbg_" prefix
+                $this->addInfoRight("POST (prev): {$label}", htmlspecialchars($value));
+            }
+        }
+    }
+
+    /**
+     * Add SESSION info to the debug panel
+     */
+    public function addSessionInfo(): void {
+        if (!$this->enabled) return;
+        if (!empty($_SESSION)) {
+            foreach ($_SESSION as $key => $value) {
+                $display = is_array($value) ? json_encode($value) : (string)$value;
+                $this->addInfoRight("SESSION: {$key}", $display);
+            }
+        }
+    }
+
     /**
      * Add GET parameters to debug panel
      */

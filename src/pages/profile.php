@@ -1,11 +1,37 @@
 <?php
+    session_start();
+    require_once("../assets/php/debug-handler.php");
 
-    $currentRole = "Administrator";
+    // Guard — kick back to login if not authenticated
+    if (!isset($_SESSION['user'])) {
+        header("Location: ../../index.php?toast=not_logged_in");
+        exit;
+    }
+
+    $debugHandler = DebugHandler::getInstance();
+    $user = $_SESSION['user']; // shorthand for use in the page
+
     function isAdmin(string $role):bool
     {
         $roleLower = strtolower($role);
 
         return $roleLower === "administrator";
+    }
+
+    $temp = 0;
+    function isLanguageSet(string $lang, string $compare): void{
+        global  $debugHandler, $temp;
+
+        $debugHandler->addInfoRight("lang".$temp, $lang);
+        $debugHandler->addInfoRight("compare".$temp, $compare);
+        $debugHandler->addInfoRight("lang === compare".$temp, $lang === $compare);
+
+        if ($lang === $compare){
+            echo("selected");
+            $debugHandler->addInfoRight("yup".$temp, "yup");
+        }
+
+        $temp++;
     }
 ?>
 <!DOCTYPE html>
@@ -41,9 +67,9 @@
             <section class="detail-card">
                 <header class="profile-header">
                     <div class="name-group">
-                        <div class="username" data-type="first-name">User</div>
-                        <div class="username" data-type="last-name">Name</div>
-                        <p class="user-role">Administrator</p>
+                        <div class="username" data-type="first-name"><?= $user["first_name"] ?></div>
+                        <div class="username" data-type="last-name"><?= $user["last_name"] ?></div>
+                        <p class="user-role"><?= $user["role"] ?></p>
                     </div>
                     <!-- placeholder using my YouTube profile pic -->
                     <img src="https://yt3.ggpht.com/pz97Hxe-gW4DR1-S4HmoZopwKXppAHPajMDtCaSSM-3HNV31wECJmegkZAohyEh7qAbCNQAHUg=s176-c-k-c0x00ffffff-no-rj" alt="User Profile" class="profile-pic" >
@@ -52,15 +78,11 @@
                 <div>
                     <div class="detail-item">
                         <label>Email Address</label>
-                        <p>yuflow.uwu@example.com</p>
+                        <p><?= $user["email"] ?></p>
                     </div>
                     <div class="detail-item">
                         <label>Member Since</label>
-                        <p>January 20, 2024</p>
-                    </div>
-                    <div class="detail-item">
-                        <label>Location</label>
-                        <p>New York, USA</p>
+                        <p><?= $user["join_date"] ?></p>
                     </div>
                     <div>
                         <button type="button" class="btn">Edit</button>
@@ -74,11 +96,11 @@
                     <div class="form-item" style="width: 10rem;">
                         <label for="language-select">Language</label>
                         <select id="language-select">
-                            <option value="en">English</option>
-                            <option value="fr">French</option>
+                            <option value="en" <?php isLanguageSet($user["language"], "en") ?>>English</option>
+                            <option value="fr" <?php isLanguageSet($user["language"], "fr") ?>>French</option>
                         </select>
                     </div>
-                    <?php if(isAdmin($currentRole)): ?>
+                    <?php if(isAdmin($user["role"])): ?>
                     <div class="form-item-stacked">
                         <label for="debug">Debug mode</label>
                         <input type="checkbox" id="debug">

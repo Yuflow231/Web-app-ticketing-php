@@ -123,6 +123,8 @@ export function verifyDateDiff(error) {
  * @param message success message to show
  * @param ref link to the next page (optional)
  */
+
+// note, this one should not be called when doing something DB related
 export function validateForm(message, ref) {
     Toast(message, "success");
 

@@ -1,6 +1,20 @@
 <?php require_once("../../assets/php/table-handler.php");
 
-    $info =[
+
+    session_start();
+    require_once("../../assets/php/debug-handler.php");
+
+    // Guard — kick back to login if not authenticated
+    if (!isset($_SESSION['user'])) {
+        header("Location: ../../../index.php?toast=not_logged_in");
+        exit;
+    }
+
+    $debugHandler = DebugHandler::getInstance();
+    $user = $_SESSION['user']; // shorthand for use in the page
+
+
+$info =[
             "id" => "101",
             "title" => "Customizable UI bars",
             "project" => "Skyblocker",

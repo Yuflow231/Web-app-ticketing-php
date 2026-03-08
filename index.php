@@ -1,12 +1,54 @@
 <?php
-    require_once("./src/assets/php/debug-handler.php");
-    // Initialize debug handler
-    $debugHandler = DebugHandler::getInstance();
+session_start();
+require_once("./src/assets/php/debug-handler.php");
+require_once("./src/assets/php/db-handler.php");
 
-    $debugHandler->addInfoLeft('Test', 'login');
+// Initialize debug handler
+$debugHandler = DebugHandler::getInstance();
+$debugHandler->addInfoLeft('Test', 'login');
+$debugHandler->addPostParams();
+$debugHandler->addGetParams();
+$debugHandler->addForwardedParams(); // show POST data forwarded from a previous redirect
+$debugHandler->addSessionInfo();     // show session contents if any
 
-    $debugHandler->addPostParams();
+// Already logged in? Skip the login page entirely
+if (isset($_SESSION['user'])) {
+    header("Location: ./src/pages/dashBoard.php" . $debugHandler->getDebugAppend());
+    exit;
+}
 
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    $email    = trim($_POST['email']    ?? '');
+    $password =      $_POST['password'] ?? '';
+
+    try {
+        $db   = DBHandler::getInstance();
+        $user = $db->loginUser($email, $password);
+
+        if ($user) {
+            $_SESSION['user'] = $user;
+            $fwd = $debugHandler->getDebugForwardParams([
+                    'email'  => $email,
+                    'result' => 'login_success',
+            ]);
+            header("Location: ./src/pages/dashBoard.php?toast=login_success" . $debugHandler->getDebugAppend() . $fwd);
+            exit;
+        } else {
+            $fwd = $debugHandler->getDebugForwardParams([
+                    'email'  => $email,
+                    'result' => 'invalid_credentials',
+            ]);
+            header("Location: ./index.php?toast=invalid_credentials" . $debugHandler->getDebugAppend() . $fwd);
+            exit;
+        }
+    } catch (Exception $e) {
+        $fwd = $debugHandler->getDebugForwardParams([
+                'error' => $e->getMessage(),
+        ]);
+        header("Location: ./index.php?toast=db_error" . $debugHandler->getDebugAppend() . $fwd);
+        exit;
+    }
+}
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -18,45 +60,65 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/js/all.min.js" defer></script>
 </head>
 <body>
-    <div id="login-box">
-        <form id="login-form" class="form-content card-wo-hover" method="POST">
-            <h2 style="text-align: center">Login</h2>
+<div id="login-box">
+    <form id="login-form" class="form-content card-wo-hover" method="POST">
+        <h2 style="text-align: center">Login</h2>
 
-            <div class="form-item-stacked">
-                <label for="form-email">Email</label>
-                <input type="email" id="form-email" name="email" placeholder="Email">
-            </div>
+        <div class="form-item-stacked">
+            <label for="form-email">Email</label>
+            <input type="email" id="form-email" name="email" placeholder="Email">
+        </div>
 
-            <div class="form-item-stacked">
-                <label for="form-password">Password</label>
-                <div class="password-wrapper">
-                    <input type="password" id="form-password" name="password" placeholder="Password">
-                    <span id="toggle-password" class="toggle-password">
+        <div class="form-item-stacked">
+            <label for="form-password">Password</label>
+            <div class="password-wrapper">
+                <input type="password" id="form-password" name="password" placeholder="Password">
+                <span id="toggle-password" class="toggle-password">
                         <i id="pass-icon" class="fa-solid fa-eye"></i>
                     </span>
-                </div>
             </div>
+        </div>
 
-            <div class="password">
-                <a href="./src/pages/reset-password.php<?= $debugHandler->getDebugParam() ?>">Forgot password ?</a>
-            </div>
+        <div class="password">
+            <a href="./src/pages/reset-password.php<?= $debugHandler->getDebugParam() ?>">Forgot password ?</a>
+        </div>
 
-            <div style="display: flex;flex-direction: column">
-                <button class="btn centered" id="actions" type="submit">
-                    Login
-                </button>
-                <button onclick="location.href = './src/pages/create-account.php<?= $debugHandler->getDebugParam() ?>'" class="btn centered btn--outline" type="button" style="margin-top: var(--spacing-md);">
-                    Create account
-                </button>
-            </div>
-        </form>
-    </div>
+        <div style="display: flex;flex-direction: column">
+            <button class="btn centered" id="actions" type="submit">
+                Login
+            </button>
+            <button onclick="location.href = './src/pages/create-account.php<?= $debugHandler->getDebugParam() ?>'" class="btn centered btn--outline" type="button" style="margin-top: var(--spacing-md);">
+                Create account
+            </button>
+        </div>
+    </form>
+</div>
 
 </body>
 <script type="module">
     // Set as module to allow imports
     import * as FormVerifier from "./src/assets/js/form-verifs.js";
-    import * as LangHandler from "./src/assets/js/language-handler.js";
+    import * as LangHandler from "./src/assets/js/language-handler.js";import Toast from "./src/assets/js/toast.js";
+
+    const toastMessages = {
+        account_created: { text: "Account has been created !", type: "success" },
+        invalid_credentials:{ text: "Invalid email or password.",       type: "error"   },
+        db_error:           { text: "A database error occurred.",       type: "error"   },
+        logged_out:         { text: "You have been logged out.",        type: "neutral" },
+    };
+
+    const params   = new URLSearchParams(window.location.search);
+    const toastKey = params.get('toast');
+
+    if (toastKey && toastMessages[toastKey]) {
+        const { text, type } = toastMessages[toastKey];
+        Toast(text, type);
+
+
+        const cleanUrl = new URL(window.location.href);
+        cleanUrl.searchParams.delete('toast');
+        window.history.replaceState({}, '', cleanUrl);
+    }
     console.log("The current language is", LangHandler.getLanguage());
 
 
@@ -90,17 +152,10 @@
         if(formValidation){
             canPress = false;
 
-
-            if(<?= json_encode($debugHandler->isEnabled()) ?>){ // need json_encode due to php's false being an empty character
-                FormVerifier.validateForm("Connecting ...");
-                // force the submission of the form, without the preventDefault (keep the form validation logic)
-                setTimeout(() => {
-                    document.getElementById("login-form").submit();
-                }, 1500);
-            }
-            else{
-                FormVerifier.validateForm("Connecting ...", "./src/pages/dashBoard.php<?= $debugHandler->getDebugParam() ?>");
-            }
+            // Always submit — PHP handles the redirect to dashboard
+            setTimeout(() => {
+                document.getElementById("login-form").submit();
+            }, 1500);
         }
     }
 
