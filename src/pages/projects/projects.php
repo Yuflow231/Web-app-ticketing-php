@@ -2,6 +2,7 @@
     session_start();
     // Import debug handler
     require_once("../../assets/php/debug-handler.php");
+    require_once("../../assets/php/db-handler.php");
     require_once("../../assets/php/table-handler.php");
 
     // Guard — kick back to login if not authenticated
@@ -13,7 +14,18 @@
     $debugHandler = DebugHandler::getInstance();
     $user = $_SESSION['user']; // shorthand for use in the page
 
-    $debugHandler = DebugHandler::getInstance();
+    // Fetch projects from DB based on role
+    try {
+        $db       = DBHandler::getInstance();
+        $projects = $db->getProjectsForUser($user['id'], $user['role']);
+    } catch (Exception $e) {
+        $projects = [];
+        $debugHandler->addInfoRight("DB Error", $e->getMessage());
+    }
+
+    $debugHandler->addGetParams();
+    $debugHandler->addSeparatorRight();
+    $debugHandler->addInfoLeft("Projects found", count($projects));
 
     $tableRows  = [
             [
@@ -94,10 +106,6 @@
                     "date" => "30/01/2026",
             ]
     ];
-
-    $debugHandler->addGetParams();
-    $debugHandler->addSeparatorRight();
-
 ?>
 
 <!DOCTYPE html>
@@ -168,32 +176,39 @@
                     <tbody>
                     <!-- Projects will be loaded here -->
                     <!-- Project template -->
-                    <?php foreach ($tableRows  as $project): ?>
-                        <?php if (isFiltered($project, ['status'])): ?>
+                    <?php foreach ($projects  as $project): ?>
+                    <!-- <?php if (isFiltered($project, ['status'])): ?> -->
                         <tr>
                             <td data-label="ID">#<?= $project["id"] ?></td>
                             <td data-label="Project name"><strong><?= $project["name"] ?></strong></td>
                             <td data-label="Client">
                                 <div class="user-profile-inline">
-                                    <img src="<?= $project["client"]["ppRef"] ?>" class="profile-pic" alt="profile-picture" style="width:40px; height:40px;">
-                                    <span style="margin-left: var(--spacing-sm)"><?= $project["client"]["name"] ?></span>
+                                    <?php $owner = $db->getProjectOwner($project["id"]); ?>
+
+                                    <img src="../../../src/assets/images/<?= $owner["profile_pic"] ?>" class="profile-pic" alt="profile-picture" style="width:40px; height:40px;">
+                                    <span style="margin-left: var(--spacing-sm)"><?= $owner["first_name"]. ' ' .$owner["last_name"] ?></span>
                                 </div>
                             </td>
                             <td data-label="Status">
-                                <span class="badge <?php setBadgeColor($project["status"]) ?> "><?= $project["status"] ?></span>
+                                <span class="badge <?php setBadgeColor($project["status"]) ?> "> <?= $project["status"] ?></span>
                             </td>
                             <td data-label="Progress">
                                 <div class="progress-container">
                                     <div class="progress-bar">
-                                        <div class="progress-fill" style="width: <?= $project["progress"] ?>;"></div>
+                                        <div class="progress-fill" style="width: <?= htmlspecialchars($project["progress_percent"]) ?>%;"></div>
                                     </div>
-                                    <div class="progress-percentage"><?= $project["progress"] ?></div>
+                                    <div class="progress-percentage"><?= $project["progress_percent"] ?>%</div>
                                 </div>
                             </td>
-                            <td data-label="Creation date"><?= $project["date"] ?></td>
-                            <td data-label="Actions"><a href="./project-details.php<?=  $debugHandler->getDebugParam() ?>" class="icon"><i class="fa-solid fa-arrow-up-right-from-square"></i></a></td>
+                            <td data-label="Creation date"><?= $project["creation_date"] ?></td>
+                            <td data-label="Actions">
+                                <div style="display: flex; justify-content: space-evenly">
+                                    <a href="./project-details.php?id=<?= $project["id"] ?><?=  $debugHandler->getDebugAppend() ?>" class="icon"><i class="fa-solid fa-arrow-up-right-from-square"></i></a>
+                                    <button class="icon delete-btn" style="color: var(--danger-color);"><i class="fa-solid fa-trash"></i></button>
+                                </div>
+                            </td>
                         </tr>
-                        <?php endif; ?>
+                    <!--<?php endif; ?> -->
                     <?php addCount(); endforeach; ?>
                     </tbody>
                 </table>
@@ -211,10 +226,15 @@
 </body>
 <script type="module">
     import * as LangHandler from "../../assets/js/language-handler.js";
+    import Toast from '../../assets/js/toast.js';
     import { TableManager } from "../../assets/js/table-handler.js";
 
     // Initialize for projects table (using 5 rows per page)
     new TableManager('.project table', 5);
     console.log("The current language is", LangHandler.getLanguage());
+
+    document.querySelectorAll('.delete-btn').forEach(btn => {
+        btn.addEventListener('click', () => Toast('Not implemented yet', 'error'));
+    });
 </script>
 </html>

@@ -1,34 +1,34 @@
 <?php
-require_once("../assets/php/debug-handler.php");
-require_once("../assets/php/db-handler.php");
+    require_once("../assets/php/debug-handler.php");
+    require_once("../assets/php/db-handler.php");
 
-// Initialize debug handler
-$debugHandler = DebugHandler::getInstance();
-$debugHandler->addInfoLeft('Test', 'create-account');
-$debugHandler->addPostParams();
+    // Initialize debug handler
+    $debugHandler = DebugHandler::getInstance();
+    $debugHandler->addInfoLeft('Test', 'create-account');
+    $debugHandler->addPostParams();
 
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $firstName = trim($_POST['form-first']  ?? '');
-    $lastName  = trim($_POST['form-last']   ?? '');
-    $email     = trim($_POST['form-email']  ?? '');
-    $password  =      $_POST['form-pass']   ?? '';
+    if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+        $firstName = trim($_POST['form-first']  ?? '');
+        $lastName  = trim($_POST['form-last']   ?? '');
+        $email     = trim($_POST['form-email']  ?? '');
+        $password  =      $_POST['form-pass']   ?? '';
 
-    try {
-        $db = DBHandler::getInstance();
+        try {
+            $db = DBHandler::getInstance();
 
-        if ($db->emailExists($email)) {
-            header("Location: ./create-account.php?toast=email_taken" . $debugHandler->getDebugParam());
-            exit;
-        } else {
-            $userId = $db->createUser($firstName, $lastName, $email, $password);
-            header("Location: ../../index.php?toast=account_created" . $debugHandler->getDebugParam());
+            if ($db->emailExists($email)) {
+                header("Location: ./create-account.php?toast=email_taken" . $debugHandler->getDebugParam());
+                exit;
+            } else {
+                $userId = $db->createUser($firstName, $lastName, $email, $password);
+                header("Location: ../../index.php?toast=account_created" . $debugHandler->getDebugParam());
+                exit;
+            }
+        } catch (Exception $e) {
+            header("Location: ./create-account.php?toast=db_error" . $debugHandler->getDebugParam());
             exit;
         }
-    } catch (Exception $e) {
-        header("Location: ./create-account.php?toast=db_error" . $debugHandler->getDebugParam());
-        exit;
     }
-}
 ?>
 <!DOCTYPE html>
 <html lang="fr">

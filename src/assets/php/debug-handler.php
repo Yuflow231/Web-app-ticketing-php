@@ -190,7 +190,7 @@ class DebugHandler {
                         $size = round($fileData['size'][$i] / 1024, 2); // Convert to KB
                         $error = $fileData['error'][$i];
 
-                        $status = ($error === UPLOAD_ERR_OK) ? "✅ OK" : "❌ Error: $error";
+                        $status = ($error === UPLOAD_ERR_OK) ? "OK" : "Error: $error";
                         $this->addInfoRight("FILE: {$inputName}[$i]", "{$name} ({$size} KB) - {$status}");
                     }
                 } else {

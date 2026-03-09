@@ -3,6 +3,7 @@
     session_start();
     // Import debug handler
     require_once("../../assets/php/debug-handler.php");
+    require_once("../../assets/php/db-handler.php");
     require_once("../../assets/php/table-handler.php");
 
     // Guard — kick back to login if not authenticated
@@ -14,6 +15,14 @@
     $debugHandler = DebugHandler::getInstance();
     $user = $_SESSION['user']; // shorthand for use in the page
 
+    // Fetch projects from DB based on role
+    try {
+        $db       = DBHandler::getInstance();
+        $tickets = $db->getAllTicketsForUser($user['id'], $user['role']);
+    } catch (Exception $e) {
+        $tickets = [];
+        $debugHandler->addInfoRight("DB Error", $e->getMessage());
+    }
 
     $debugHandler = DebugHandler::getInstance();
 
@@ -145,23 +154,28 @@
                     </thead>
                     <tbody id="tickets-tbody">
                     <!-- Tickets will be loaded here -->
-                    <?php foreach ($tableRows as $ticket) : ?>
+                    <?php foreach ($tickets as $ticket) : ?>
                         <?php if (isFiltered($ticket, ['status', 'priority', 'type'])): ?>
                         <tr>
                             <td data-label="ID">#<?= $ticket["id"] ?></td>
-                            <td data-label="Title"><strong><?= $ticket["title"] ?></strong></td>
-                            <td data-label="Project"><?= $ticket["project"] ?></td>
+                            <td data-label="Title"><strong><?= $ticket["name"] ?></strong></td>
+                            <td data-label="Project"><?= $db->getProjectNameByTicketId($ticket["project_id"]) ?></td>
                             <td data-label="Status"><span class="badge  <?php setBadgeColor($ticket["status"]) ?> "><?= $ticket["status"] ?></span></td>
                             <td data-label="Priority"><span class="badge  <?php setBadgeColor($ticket["priority"]) ?> "><?= $ticket["priority"] ?></span></td>
                             <td data-label="Priority"><span class="badge  <?php setBadgeColor($ticket["type"]) ?> "><?= $ticket["type"] ?></span></td>
                             <td data-label="Assigned">
                                 <div class="avatar-line">
-                                    <?php foreach ($ticket["clients"] as $clientPP) : ?>
-                                    <img src="<?= $clientPP ?>" title="Unassigned" alt="profile-picture" class="profile-pic-mini">
+                                    <?php foreach ($db->getTicketWorkers($ticket["id"]) as $contributor) : ?>
+                                    <img src="../../../src/assets/images/<?= $contributor["profile_pic"] ?>" title="<?= $contributor["first_name"]. ' ' .$contributor["last_name"] ?>" alt="profile_pic" class="profile-pic-mini">
                                     <?php endforeach; ?>
                                 </div>
                             </td>
-                            <td data-label="Actions"><a href="./ticket-details.php<?=  $debugHandler->getDebugParam() ?>" class="icon"><i class="fa-solid fa-arrow-up-right-from-square"></i></a></td>
+                            <td data-label="Actions">
+                                <div style="display: flex; justify-content: space-evenly">
+                                    <a href="./ticket-details.php?id=<?= $ticket["id"] ?><?=  $debugHandler->getDebugAppend() ?>" class="icon"><i class="fa-solid fa-arrow-up-right-from-square"></i></a>
+                                    <button class="icon delete-btn" style="color: var(--danger-color);"><i class="fa-solid fa-trash"></i></button>
+                                </div>
+                            </td>
                         </tr>
                         <?php endif; ?>
                     <?php addCount(); endforeach; ?>
@@ -180,9 +194,14 @@
 </body>
 <script type="module">
     import * as LangHandler from "../../assets/js/language-handler.js";
+    import Toast from '../../assets/js/toast.js';
     import { TableManager } from "../../assets/js/table-handler.js";
     // Initialize for tickets table
     new TableManager('.tickets table', 5);
     console.log("The current language is", LangHandler.getLanguage());
+
+    document.querySelectorAll('.delete-btn').forEach(btn => {
+        btn.addEventListener('click', () => Toast('Not implemented yet', 'error'));
+    });
 </script>
 </html>

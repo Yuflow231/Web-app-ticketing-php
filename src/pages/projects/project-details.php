@@ -1,7 +1,8 @@
-<?php require_once("../../assets/php/table-handler.php");
-
+<?php
     session_start();
+    require_once("../../assets/php/table-handler.php");
     require_once("../../assets/php/debug-handler.php");
+    require_once("../../assets/php/db-handler.php");
 
     // Guard — kick back to login if not authenticated
     if (!isset($_SESSION['user'])) {
@@ -11,6 +12,16 @@
 
     $debugHandler = DebugHandler::getInstance();
     $user = $_SESSION['user']; // shorthand for use in the page
+
+    $project_id = $_GET["id"];
+    // Fetch projects from DB based on role
+    try {
+        $db       = DBHandler::getInstance();
+        $project = $db->getProjectById($project_id);
+    } catch (Exception $e) {
+        $project = [];
+        $debugHandler->addInfoRight("DB Error", $e->getMessage());
+    }
 
     $info =[
             "id" => "101",
@@ -72,7 +83,7 @@
     <!-- Page content -->
     <main class="main-content">
         <header class="page-header">
-            <h1 id="project-title-header">Project: <?= $info["title"] ?></h1>
+            <h1 id="project-title-header">Project: <?= $project["name"] ?></h1>
         </header>
 
         <div class="detail-container" id="project-data-container">
@@ -80,18 +91,18 @@
                 <div class="detail-item">
                     <label>ID</label>
                     <p id="project-id">
-                        #<?= $info["id"] ?>
+                        #<?= $project["id"] ?>
                     </p>
                 </div>
                 <div class="inline-elements">
                     <div class="detail-item">
                         <label>Status</label>
-                        <span class="badge <?php setBadgeColor($info["status"]) ?>"><?= $info["status"] ?></span>
+                        <span class="badge <?php setBadgeColor($project["status"]) ?>"><?= $project["status"] ?></span>
                     </div>
                     <div class="detail-item">
                         <label>Closing date</label>
-                        <p id="ending-date">
-                            <?= $info["end"] ?>
+                        <p id="closing-date">
+                            <?= $project["closing_date"] ?>
                         </p>
                     </div>
                 </div>
@@ -99,18 +110,18 @@
                 <div class="detail-item">
                     <label>Detailed Description</label>
                     <p id="project-description">
-                        <?= $info["description"] ?>
+                        <?= $project["description"] ?>
                     </p>
                 </div>
 
                 <div class="inline-elements" style="margin-top: 2rem;">
                     <div class="detail-item">
                         <label>Actual Time Spent</label>
-                        <p id="actual-time"><?= $info["spent"] ?></p>
+                        <p id="actual-time"><?= $project["estimated_time"] ?> hours</p>
                     </div>
                     <div class="detail-item">
                         <label>Estimated Time</label>
-                        <p id="est-time"><?= $info["estimated"] ?></p>
+                        <p id="est-time"><?= $project["estimated_time"] ?> hours</p>
                     </div>
                 </div>
 
@@ -125,13 +136,13 @@
                 <section class="detail-card">
                     <h2>Project Team</h2>
                     <div id="collaborator-list">
-                        <?php foreach ($info["collaborators"] as $user): ?>
+                        <?php foreach ( $db->getProjectTeam($project_id) as $user): ?>
                         <div class="user-profile-inline" style="margin-bottom: var(--spacing-sm);" >
-                            <img src="<?= $user["pic"] ?>" alt="User Profile" class="profile-pic" >
+                            <img src="../../../src/assets/images/<?= $user["profile_pic"] ?>" alt="User Profile" class="profile-pic" >
                             <div class="item-stacked" style="margin-left: var(--spacing-sm);">
                                 <div>
-                                    <span class="username" data-type="first-name"><?= $user["first"] ?></span>
-                                    <span class="username" data-type="last-name"><?= $user["last"] ?></span>
+                                    <span class="username" data-type="first-name"><?= $user["first_name"] ?></span>
+                                    <span class="username" data-type="last-name"><?= $user["last_name"] ?></span>
                                 </div>
                                 <span class="user-role"><?= $user["role"] ?></span>
                             </div>
@@ -145,9 +156,9 @@
                     <div class="detail-item">
                         <label>Completion</label>
                         <div class="progress-bar">
-                            <div class="progress-fill" style="width: <?= $info["progress"] ?>;"></div>
+                            <div class="progress-fill" style="width: <?= $project["progress_percent"] ?>%;"></div>
                         </div>
-                        <p style="font-size: var(--font-size-sm); margin-top: var(--spacing-sm);"><?= $info["progress"] ?> of ticket completion</p>
+                        <p style="font-size: var(--font-size-sm); margin-top: var(--spacing-sm);"><?= $project["progress_percent"] ?>% of ticket completion</p>
                     </div>
                 </section>
             </div>
@@ -179,15 +190,15 @@
                         </tr>
                         </thead>
                         <tbody>
-                        <?php foreach ($tableRows as $row): ?>
-                            <?php if (isFiltered($row, ['type'])): ?>
+                        <?php foreach ($db->getTicketsByProject($project_id) as $ticket): ?>
+                            <?php if (isFiltered($ticket, ['type'])): ?>
                             <tr>
-                                <td data-label="ID">#<?= $row["id"] ?></td>
-                                <td data-label="Title"><strong><?= $row["title"] ?></strong></td>
-                                <td data-label="Status"><span class="badge <?php setBadgeColor($row["status"]) ?>"><?= $row["status"] ?></span></td>
-                                <td data-label="Priority"><span class="badge <?php setBadgeColor($row["priority"]) ?>"><?= $row["priority"] ?></span></td>
-                                <td data-label="Type"><span class="badge <?php setBadgeColor($row["type"]) ?>"><?= $row["type"] ?></span></td>
-                                <td data-label="Action"><a href="/src/pages/tickets/ticket-details.php<?=  $debugHandler->getDebugParam() ?>" class="icon"><i class="fa-solid fa-arrow-up-right-from-square"></i></a></td>
+                                <td data-label="ID">#<?= $ticket["id"] ?></td>
+                                <td data-label="Title"><strong><?= $ticket["name"] ?></strong></td>
+                                <td data-label="Status"><span class="badge <?php setBadgeColor($ticket["status"]) ?>"><?= $ticket["status"] ?></span></td>
+                                <td data-label="Priority"><span class="badge <?php setBadgeColor($ticket["priority"]) ?>"><?= $ticket["priority"] ?></span></td>
+                                <td data-label="Type"><span class="badge <?php setBadgeColor($ticket["type"]) ?>"><?= $ticket["type"] ?></span></td>
+                                <td data-label="Action"><a href="../tickets/ticket-details.php?id=<?= $ticket["id"] ?><?=  $debugHandler->getDebugAppend() ?>" class="icon"><i class="fa-solid fa-arrow-up-right-from-square"></i></a></td>
                             </tr>
                             <?php endif; ?>
                         <?php endforeach; ?>

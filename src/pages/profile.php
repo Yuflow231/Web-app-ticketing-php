@@ -71,8 +71,9 @@
                         <div class="username" data-type="last-name"><?= $user["last_name"] ?></div>
                         <p class="user-role"><?= $user["role"] ?></p>
                     </div>
-                    <!-- placeholder using my YouTube profile pic -->
-                    <img src="https://yt3.ggpht.com/pz97Hxe-gW4DR1-S4HmoZopwKXppAHPajMDtCaSSM-3HNV31wECJmegkZAohyEh7qAbCNQAHUg=s176-c-k-c0x00ffffff-no-rj" alt="User Profile" class="profile-pic" >
+
+
+                    <img src="../../src/assets/images/<?= $user["profile_pic"] ?>" alt="User Profile" class="profile-pic" >
                 </header>
 
                 <div>

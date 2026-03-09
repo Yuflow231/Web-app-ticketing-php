@@ -44,8 +44,8 @@
             <a href="/Web-app-ticketing-php/src/pages/profile.php<?= $debug ?>" class="user-profile-inline">
                 <span class="username" data-type="first-name"><?= $user["first_name"] ?></span>
                 <span class="username" data-type="last-name"><?= $user["last_name"] ?></span>
-                <!-- placeholder using my YouTube profile pic -->
-                <img src="https://yt3.ggpht.com/pz97Hxe-gW4DR1-S4HmoZopwKXppAHPajMDtCaSSM-3HNV31wECJmegkZAohyEh7qAbCNQAHUg=s176-c-k-c0x00ffffff-no-rj" alt="User Profile" class="profile-pic" >
+
+                <img src="/Web-app-ticketing-php/src/assets/images/<?= $user["profile_pic"] ?>" alt="User Profile" class="profile-pic" >
             </a>
         </div>
     </header>
