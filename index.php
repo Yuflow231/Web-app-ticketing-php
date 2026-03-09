@@ -27,25 +27,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         if ($user) {
             $_SESSION['user'] = $user;
-            $fwd = $debugHandler->getDebugForwardParams([
-                    'email'  => $email,
-                    'result' => 'login_success',
-            ]);
-            header("Location: ./src/pages/dashBoard.php?toast=login_success" . $debugHandler->getDebugAppend() . $fwd);
+            header("Location: ./src/pages/dashBoard.php?toast=login_success" . $debugHandler->getDebugAppend());
             exit;
         } else {
-            $fwd = $debugHandler->getDebugForwardParams([
-                    'email'  => $email,
-                    'result' => 'invalid_credentials',
-            ]);
-            header("Location: ./index.php?toast=invalid_credentials" . $debugHandler->getDebugAppend() . $fwd);
+            header("Location: ./index.php?toast=invalid_credentials" . $debugHandler->getDebugAppend());
             exit;
         }
     } catch (Exception $e) {
-        $fwd = $debugHandler->getDebugForwardParams([
-                'error' => $e->getMessage(),
-        ]);
-        header("Location: ./index.php?toast=db_error" . $debugHandler->getDebugAppend() . $fwd);
+        header("Location: ./index.php?toast=db_error" . $debugHandler->getDebugAppend());
         exit;
     }
 }
