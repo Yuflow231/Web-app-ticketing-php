@@ -141,6 +141,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         if(formValidation){
             canPress = false;
 
+            FormVerifier.validateForm("Logging in ...");
             // Always submit — PHP handles the redirect to dashboard
             setTimeout(() => {
                 document.getElementById("login-form").submit();

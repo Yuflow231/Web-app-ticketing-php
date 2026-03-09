@@ -24,26 +24,6 @@
         $ticket = [];
         $debugHandler->addInfoRight("DB Error", $e->getMessage());
     }
-
-    $info =[
-                "id" => "101",
-                "title" => "Customizable UI bars",
-                "project" => "Skyblocker",
-                "description" => "Create modulable and customizable bars to replace the default bars of Hypixel Skyblock",
-                "status" => "In Progress",
-                "priority" => "Medium",
-                "type" => "Included",
-                "spent" => "4.5 Hours",
-                "estimated" => "8.0 Hours",
-                "collaborators" => [
-                        "client1" => [
-                                "pic" => "../../assets/images/icon.png",
-                                "role" => "cat",
-                                "first" => "VicIsCat",
-                                "last" => "",
-                                ]
-                ]
-        ]
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -74,7 +54,7 @@
 
                 <div class="detail-item" >
                     <label>Associated project</label>
-                    <p><?= $db->getProjectNameByTicketId($ticket["project_id"]) ?></p>
+                    <p><?= $ticket["project_name"] ?></p>
                 </div>
 
                 <div class="detail-item" >
@@ -85,7 +65,7 @@
                 <div class="inline-elements">
                     <div class="detail-item">
                         <label>Actual Time Spent</label>
-                        <p><?= $ticket["estimated_time"] ?></p>
+                        <p><?= $ticket["spent_time"] ?></p>
                     </div>
                     <div class="detail-item">
                         <label>Estimated Time</label>
@@ -94,7 +74,7 @@
                 </div>
 
                 <div class="inline-elements" style="margin-top: auto; padding-top: 1rem;">
-                    <button class="btn">Update Ticket</button>
+                    <button class="btn">Edit Ticket</button>
                     <button class="btn btn--danger">Close Ticket</button>
                 </div>
             </section>
@@ -146,4 +126,22 @@
         </div>
     </main>
 </body>
+<script type="module">
+    import Toast from "../../assets/js/toast.js";
+
+    const toastMessages = {
+        ticket_created: { text: "Ticket created successfully !", type: "success" },
+    };
+
+    const params   = new URLSearchParams(window.location.search);
+    const toastKey = params.get('toast');
+
+    if (toastKey && toastMessages[toastKey]) {
+        const { text, type } = toastMessages[toastKey];
+        Toast(text, type);
+        const cleanUrl = new URL(window.location.href);
+        cleanUrl.searchParams.delete('toast');
+        window.history.replaceState({}, '', cleanUrl);
+    }
+</script>
 </html>

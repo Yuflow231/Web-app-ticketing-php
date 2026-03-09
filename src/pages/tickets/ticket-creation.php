@@ -1,6 +1,7 @@
 <?php
     session_start();
     require_once("../../assets/php/debug-handler.php");
+    require_once("../../assets/php/db-handler.php");
 
     // Guard — kick back to login if not authenticated
     if (!isset($_SESSION['user'])) {
@@ -8,14 +9,41 @@
         exit;
     }
 
-    $user = $_SESSION['user']; // shorthand for use in the page
-
-    // Initialize debug handler
+    $user = $_SESSION['user'];
     $debugHandler = DebugHandler::getInstance();
-
     $debugHandler->addPostParams();
-
     $debugHandler->addFileParams();
+    $debugHandler->addForwardedParams();
+
+    // Load projects for dropdown based on role
+    $projects = [];
+    try {
+        $db = DBHandler::getInstance();
+        $projects = $db->getProjectsForUser($user['id'], $user['role']);
+    } catch (Exception $e) {
+        $debugHandler->addInfoRight("DB Error", $e->getMessage());
+    }
+
+    // Handle form submission
+    if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+        $name        = trim($_POST['ticket-title']       ?? '');
+        $projectId   = (int) ($_POST['ticket-project']   ?? 0);
+        $priority    = $_POST['ticket-priority']         ?? 'Medium';
+        $description = trim($_POST['ticket-description'] ?? '');
+        $estimated   = !empty($_POST['estimated-time']) ? (float) $_POST['estimated-time'] : 0;
+
+        try {
+            $ticketId = $db->createTicket($name, $projectId, $priority, $description, $estimated);
+            // Auto-assign creator as 'Ticket Creator'
+            $db->assignTicketWorker($ticketId, $user['id'], 'Ticket Creator');
+            header("Location: ../tickets/ticket-details.php?id={$ticketId}&toast=ticket_created" . $debugHandler->getDebugAppend());
+            exit;
+        } catch (Exception $e) {
+            $fwd = $debugHandler->getDebugForwardParams(['DB Error' => $e->getMessage()]);
+            header("Location: ./ticket-creation.php?toast=db_error" . $debugHandler->getDebugAppend() . $fwd);
+            exit;
+        }
+    }
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -47,16 +75,20 @@
                     <label for="ticket-project">Associated project *</label>
                     <select id="ticket-project" name="ticket-project">
                         <option value="" disabled selected hidden>Select a project</option>
-                        <option value="Skyblocker">Skyblocker</option>
+                        <?php foreach ($projects as $project): ?>
+                            <option value="<?= $project['id'] ?>"><?= $project['name'] ?></option>
+                        <?php endforeach; ?>
                     </select>
                 </div>
             </div>
 
             <div class="form-2elements">
+                <!--
                 <div class="form-item-stacked">
                     <label for="due-date">Due to *</label>
                     <input type="date" id="due-date" name="due-date">
                 </div>
+                -->
                 <div class="form-item-stacked">
                     <label for="ticket-priority">Priority *</label>
                     <select id="ticket-priority" name="ticket-priority">
@@ -93,12 +125,26 @@
     // Set as module to allow imports
     import * as FormVerifier from "../../assets/js/form-verifs.js";
     import * as DragDrop from "../../assets/js/drag-n-drop.js";
+    import Toast from "../../assets/js/toast.js";
+
+    // Toast from redirect
+    const toastMessages = {
+        db_error: { text: "A database error occurred.", type: "error" },
+    };
+    const params = new URLSearchParams(window.location.search);
+    const toastKey = params.get('toast');
+    if (toastKey && toastMessages[toastKey]) {
+        Toast(toastMessages[toastKey].text, toastMessages[toastKey].type);
+        const cleanUrl = new URL(window.location.href);
+        cleanUrl.searchParams.delete('toast');
+        window.history.replaceState({}, '', cleanUrl);
+    }
 
     // Get references to form's field
     let formTitle = document.getElementById("ticket-title");
     let formProject = document.getElementById("ticket-project");
 
-    let formDate = document.getElementById("due-date");
+    // let formDate = document.getElementById("due-date");
     let formPriority = document.getElementById("ticket-priority");
 
     // prevent multiple request when the infos are correct
@@ -118,12 +164,12 @@
     function verifyForm(){
         let formValidation = true;
         // Clear previous highlights
-        FormVerifier.resetFormState([formTitle, formProject, formDate, formPriority]);
+        FormVerifier.resetFormState([formTitle, formProject, formPriority]);
 
         // check each field with its corresponding checks
         formValidation &= FormVerifier.checkField(formTitle, formTitle, [FormVerifier.verifyEmptyness("Please enter a ticket title")]);
         formValidation &= FormVerifier.checkField(formProject, formProject, [FormVerifier.verifyEmptyness("Please chose the associated project")]);
-        formValidation &= FormVerifier.checkField(formDate, formDate, [FormVerifier.verifyEmptyness("Please select a due date"), FormVerifier.verifyDate("Due date cannot be in the past")]);
+        // formValidation &= FormVerifier.checkField(formDate, formDate, [FormVerifier.verifyEmptyness("Please select a due date"), FormVerifier.verifyDate("Due date cannot be in the past")]);
         formValidation &= FormVerifier.checkField(formPriority, formPriority, [FormVerifier.verifyEmptyness("Please chose the priority level")]);
 
         // if everything checks out
@@ -131,17 +177,11 @@
             canPress = false;
 
             DragDrop.syncFilesToInput();
-
-            if(<?= json_encode($debugHandler->isEnabled()) ?>){ // need json_encode due to php's false being an empty character
-                FormVerifier.validateForm("Creating ticket ...");
-                // force the submission of the form, without the preventDefault (keep the form validation logic)
-                setTimeout(() => {
-                    document.getElementById("ticket-form").submit();
-                }, 1500);
-            }
-            else{
-                FormVerifier.validateForm("Creating ticket ...", "/src/pages/tickets/tickets.php<?=  $debugHandler->getDebugParam() ?>");
-            }
+            FormVerifier.validateForm("Creating ticket ...");
+            // force the submission of the form, without the preventDefault (keep the form validation logic)
+            setTimeout(() => {
+                document.getElementById("ticket-form").submit();
+            }, 1500);
         }
     }
 </script>

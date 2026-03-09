@@ -23,48 +23,6 @@
         $debugHandler->addInfoRight("DB Error", $e->getMessage());
     }
 
-    $info =[
-            "id" => "101",
-            "title" => "Skyblocker",
-            "status" => "In Progress",
-            "end" => "24/10/2026",
-            "description" => "Create a minecraft mode that act as an add-on for the Hypixel server, more precisely for its Skyblock game mode. Its role is to enhance the game experience by providing quality of life improvement, as well as improving guidance.",
-            "spent" => "45.5 Hours",
-            "estimated" => "120 Hours",
-            "progress" => "38%",
-            "collaborators" => [
-                    "client1" => [
-                            "pic" => "../../assets/images/icon.png",
-                            "role" => "Maintainer",
-                            "first" => "Alex33856",
-                            "last" => "",
-                    ],
-                    "client2" => [
-                            "pic" => "../../assets/images/icon.png",
-                            "role" => "cat",
-                            "first" => "VicIsCat",
-                            "last" => "",
-                    ]
-            ]
-    ];
-
-    $tableRows =[
-            [
-                    "id" => "101",
-                    "title" => "Customizable UI bars",
-                    "status" => "In Progress",
-                    "priority" => "Medium",
-                    "type" => "Included"
-            ],
-            [
-                    "id" => "105",
-                    "title" => "Implement Dark Mode",
-                    "status" => "New",
-                    "priority" => "Low",
-                    "type" => "Billed"
-            ]
-    ];
-
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -117,17 +75,17 @@
                 <div class="inline-elements" style="margin-top: 2rem;">
                     <div class="detail-item">
                         <label>Actual Time Spent</label>
-                        <p id="actual-time"><?= $project["estimated_time"] ?> hours</p>
+                        <p id="actual-time" style="text-align: center"><?= $project["estimated_time"] ?> hours</p>
                     </div>
                     <div class="detail-item">
                         <label>Estimated Time</label>
-                        <p id="est-time"><?= $project["estimated_time"] ?> hours</p>
+                        <p id="est-time" style="text-align: center"><?= $project["estimated_time"] ?> hours</p>
                     </div>
                 </div>
 
 
                 <div class="inline-elements" style="margin-top: auto; padding-top: 1rem;">
-                    <button class="btn">Update Project</button>
+                    <button class="btn">Edit Project</button>
                     <button class="btn btn--danger">Close Project</button>
                 </div>
             </section>
@@ -222,5 +180,22 @@
     import { TableManager } from "../../assets/js/table-handler.js";
     // Initialize for tickets table
     new TableManager('.table-card table', 5);
+
+    import Toast from "../../assets/js/toast.js";
+
+    const toastMessages = {
+        project_created: { text: "Project created successfully !", type: "success" },
+    };
+
+    const params   = new URLSearchParams(window.location.search);
+    const toastKey = params.get('toast');
+
+    if (toastKey && toastMessages[toastKey]) {
+        const { text, type } = toastMessages[toastKey];
+        Toast(text, type);
+        const cleanUrl = new URL(window.location.href);
+        cleanUrl.searchParams.delete('toast');
+        window.history.replaceState({}, '', cleanUrl);
+    }
 </script>
 </html>

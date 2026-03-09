@@ -26,86 +26,6 @@
     $debugHandler->addGetParams();
     $debugHandler->addSeparatorRight();
     $debugHandler->addInfoLeft("Projects found", count($projects));
-
-    $tableRows  = [
-            [
-                    "id" => "101",
-                    "name" => "Skyblocker",
-                    "client" => [
-                            "ppRef" => "../../assets/images/icon.png",
-                            "name" => "VicIsACat",
-                    ],
-                    "status" => "In progress",
-                    "progress" => "3%",
-                    "date" => "52/02/1996",
-            ],
-            [
-                    "id" => "102",
-                    "name" => "Customizable Player Model",
-                    "client" => [
-                            "ppRef" => "../../assets/images/icon.png",
-                            "name" => "tom54541",
-                    ],
-                    "status" => "On Hold",
-                    "progress" => "75%",
-                    "date" => "30/01/2026",
-            ],
-            [
-                    "id" => "103",
-                    "name" => "Customizable Player Model",
-                    "client" => [
-                            "ppRef" => "../../assets/images/icon.png",
-                            "name" => "tom54541",
-                    ],
-                    "status" => "New",
-                    "progress" => "75%",
-                    "date" => "30/01/2026",
-            ],
-            [
-                    "id" => "104",
-                    "name" => "Customizable Player Model",
-                    "client" => [
-                            "ppRef" => "../../assets/images/icon.png",
-                            "name" => "tom54541",
-                    ],
-                    "status" => "Completed",
-                    "progress" => "25%",
-                    "date" => "30/01/2026",
-            ],
-            [
-                    "id" => "105",
-                    "name" => "Customizable Player Model",
-                    "client" => [
-                            "ppRef" => "../../assets/images/icon.png",
-                            "name" => "tom54541",
-                    ],
-                    "status" => "Closed",
-                    "progress" => "86%",
-                    "date" => "30/01/2026",
-            ],
-            [
-                    "id" => "106",
-                    "name" => "Customizable Player Model",
-                    "client" => [
-                            "ppRef" => "../../assets/images/icon.png",
-                            "name" => "tom54541",
-                    ],
-                    "status" => "Closed",
-                    "progress" => "75%",
-                    "date" => "30/01/2026",
-            ],
-            [
-                    "id" => "107",
-                    "name" => "Customizable Player Model",
-                    "client" => [
-                            "ppRef" => "../../assets/images/icon.png",
-                            "name" => "tom54541",
-                    ],
-                    "status" => "In Progress",
-                    "progress" => "86%",
-                    "date" => "30/01/2026",
-            ]
-    ];
 ?>
 
 <!DOCTYPE html>
@@ -166,7 +86,7 @@
                     <tr>
                         <th>ID</th>
                         <th>Project name</th>
-                        <th>Client</th>
+                        <th>Owner</th>
                         <th>Status</th>
                         <th>Progress</th>
                         <th>Creation date</th>

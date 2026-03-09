@@ -158,29 +158,36 @@ class DBHandler {
 
     /** Create a new project, returns new project id */
     public function createProject(
-        string $name,
-        int    $ownerUserId,
-        string $description   = '',
-        ?float $estimatedTime = null
+        string  $name,
+        int     $ownerUserId,
+        string  $description   = '',
+        float   $estimatedTime = 0,
+        string  $status        = 'New',
+        ?string $closingDate   = null
     ): int {
+        if (!in_array($status, ['New', 'In Progress', 'On Hold', 'Completed', 'Closed'])) {
+            throw new InvalidArgumentException("Invalid status '{$status}'.");
+        }
+
         $projectId = $this->insert(
-            "INSERT INTO Projects (name, status, progress_percent, creation_date, description, estimated_time, spent_time)
-             VALUES (?, 'New', 0, NOW(), ?, ?, 0)",
-            [$name, $description, $estimatedTime]
+            "INSERT INTO Projects (name, status, progress_percent, creation_date, closing_date, description, estimated_time, spent_time)
+             VALUES (?, ?, 0, NOW(), ?, ?, ?, 0)",
+            [$name, $status, $closingDate, $description, $estimatedTime]
         );
-        // The creator is automatically added as Owner in Project_Team
+        // Creator is automatically added as Owner in Project_Team
         $this->addProjectMember($projectId, $ownerUserId, 'Owner');
         return $projectId;
     }
+
 
     /** Get a single project by id */
     public function getProjectById(int $id): ?array {
         return $this->fetchOne(
             "SELECT p.*, u.first_name AS owner_first_name, u.last_name AS owner_last_name, u.profile_pic AS owner_pfp
-             FROM Projects p
-             LEFT JOIN Project_Team pt ON pt.project_id = p.id AND pt.role = 'Owner'
-             LEFT JOIN Users u ON u.id = pt.user_id
-             WHERE p.id = ?",
+                 FROM Projects p
+                 LEFT JOIN Project_Team pt ON pt.project_id = p.id AND pt.role = 'Owner'
+                 LEFT JOIN Users u ON u.id = pt.user_id
+                 WHERE p.id = ?",
             [$id]
         );
     }
@@ -189,11 +196,11 @@ class DBHandler {
     public function getProjectsByClient(int $userId): array {
         return $this->fetchAll(
             "SELECT p.*, u.first_name AS owner_first_name, u.last_name AS owner_last_name, u.profile_pic AS owner_pfp
-             FROM Projects p
-             JOIN Project_Team pt ON pt.project_id = p.id AND pt.role = 'Owner'
-             JOIN Users u ON u.id = pt.user_id
-             WHERE pt.user_id = ?
-             ORDER BY p.creation_date DESC",
+                 FROM Projects p
+                 JOIN Project_Team pt ON pt.project_id = p.id AND pt.role = 'Owner'
+                 JOIN Users u ON u.id = pt.user_id
+                 WHERE pt.user_id = ?
+                 ORDER BY p.creation_date DESC",
             [$userId]
         );
     }
@@ -202,11 +209,11 @@ class DBHandler {
     public function getProjectsByMember(int $userId): array {
         return $this->fetchAll(
             "SELECT p.*, u.first_name AS owner_first_name, u.last_name AS owner_last_name, u.profile_pic AS owner_pfp
-             FROM Projects p
-             JOIN Project_Team pt_member ON pt_member.project_id = p.id AND pt_member.user_id = ? AND pt_member.role = 'Maintainer'
-             LEFT JOIN Project_Team pt_owner ON pt_owner.project_id = p.id AND pt_owner.role = 'Owner'
-             LEFT JOIN Users u ON u.id = pt_owner.user_id
-             ORDER BY p.creation_date DESC",
+                 FROM Projects p
+                 JOIN Project_Team pt_member ON pt_member.project_id = p.id AND pt_member.user_id = ? AND pt_member.role = 'Maintainer'
+                 LEFT JOIN Project_Team pt_owner ON pt_owner.project_id = p.id AND pt_owner.role = 'Owner'
+                 LEFT JOIN Users u ON u.id = pt_owner.user_id
+                 ORDER BY p.creation_date DESC",
             [$userId]
         );
     }
@@ -215,10 +222,10 @@ class DBHandler {
     public function getAllProjects(): array {
         return $this->fetchAll(
             "SELECT p.*, u.first_name AS owner_first_name, u.last_name AS owner_last_name, u.profile_pic AS owner_pfp
-             FROM Projects p
-             LEFT JOIN Project_Team pt ON pt.project_id = p.id AND pt.role = 'Owner'
-             LEFT JOIN Users u ON u.id = pt.user_id
-             ORDER BY p.creation_date DESC"
+                 FROM Projects p
+                 LEFT JOIN Project_Team pt ON pt.project_id = p.id AND pt.role = 'Owner'
+                 LEFT JOIN Users u ON u.id = pt.user_id
+                 ORDER BY p.creation_date DESC"
         );
     }
 
@@ -289,10 +296,10 @@ class DBHandler {
     public function getProjectOwner(int $projectId): ?array {
         return $this->fetchOne(
             "SELECT u.id, u.first_name, u.last_name, u.profile_pic
-         FROM Project_Team pt
-         JOIN Users u ON u.id = pt.user_id
-         WHERE pt.project_id = ? AND pt.role = 'Owner'
-         LIMIT 1",
+                 FROM Project_Team pt
+                 JOIN Users u ON u.id = pt.user_id
+                 WHERE pt.project_id = ? AND pt.role = 'Owner'
+                 LIMIT 1",
             [$projectId]
         );
     }
@@ -301,9 +308,9 @@ class DBHandler {
     public function getProjectTeam(int $projectId): array {
         return $this->fetchAll(
             "SELECT u.id, u.first_name, u.last_name, u.email, u.profile_pic, pt.role
-             FROM Project_Team pt
-             JOIN Users u ON u.id = pt.user_id
-             WHERE pt.project_id = ?",
+                 FROM Project_Team pt
+                 JOIN Users u ON u.id = pt.user_id
+                 WHERE pt.project_id = ?",
             [$projectId]
         );
     }
@@ -317,22 +324,27 @@ class DBHandler {
     public function createTicket(
         string $name,
         int    $projectId,
-        string $priority      = 'medium',
-        string $type          = 'task',
+        string $priority      = 'Medium',
         string $description   = '',
-        ?float $estimatedTime = null
+        float  $estimatedTime = 0
     ): int {
+        if (!in_array($priority, ['High', 'Medium', 'Low'])) {
+            throw new InvalidArgumentException("Invalid priority '{$priority}'.");
+        }
         return $this->insert(
             "INSERT INTO Tickets (name, project_id, status, priority, type, description, estimated_time, spent_time)
-             VALUES (?, ?, 'open', ?, ?, ?, ?, 0)",
-            [$name, $projectId, $priority, $type, $description, $estimatedTime]
+             VALUES (?, ?, 'New', ?, 'Included', ?, ?, 0)",
+            [$name, $projectId, $priority, $description, $estimatedTime]
         );
     }
 
     /** Get a single ticket by id */
     public function getTicketById(int $id): ?array {
         return $this->fetchOne(
-            "SELECT * FROM Tickets WHERE id = ?",
+            "SELECT t.*, p.name AS project_name
+                 FROM Tickets t
+                 JOIN Projects p ON p.id = t.project_id
+                 WHERE t.id = ?",
             [$id]
         );
     }
@@ -343,19 +355,6 @@ class DBHandler {
             "SELECT * FROM Tickets WHERE project_id = ? ORDER BY priority DESC",
             [$projectId]
         );
-    }
-
-    /** Get the project name for a given ticket id */
-    public function getProjectNameByTicketId(int $ticketId): ?string {
-        $row = $this->fetchOne(
-            "SELECT p.name
-         FROM Tickets t
-         JOIN Projects p ON p.id = t.project_id
-         WHERE t.id = ?
-         LIMIT 1",
-            [$ticketId]
-        );
-        return $row ? $row['name'] : null;
     }
 
     /** Update a ticket's status */
@@ -381,11 +380,11 @@ class DBHandler {
 
     /** Assign a user to a ticket with a role */
     public function assignTicketWorker(int $ticketId, int $userId, string $role = 'Helper'): bool {
-        if (!in_array($role, ['Initiator', 'Helper'])) {
-            throw new InvalidArgumentException("Invalid role '{$role}'. Must be 'Initiator' or 'Helper'.");
+        if (!in_array($role, ['Ticket Creator', 'Helper'])) {
+            throw new InvalidArgumentException("Invalid role '{$role}'. Must be 'Ticket Creator' or 'Helper'.");
         }
         return $this->execute(
-                "INSERT IGNORE INTO Ticket_Worker (ticket_id, user_id, role) VALUES (?, ?, ?)",
+                "INSERT IGNORE INTO Ticket_Workers (ticket_id, user_id, role) VALUES (?, ?, ?)",
                 [$ticketId, $userId, $role]
             ) > 0;
     }
@@ -402,9 +401,9 @@ class DBHandler {
     public function getTicketWorkers(int $ticketId): array {
         return $this->fetchAll(
             "SELECT u.id, u.first_name, u.last_name, u.email, u.profile_pic, tw.role
-             FROM Ticket_Workers tw
-             JOIN Users u ON u.id = tw.user_id
-             WHERE tw.ticket_id = ?",
+                 FROM Ticket_Workers tw
+                 JOIN Users u ON u.id = tw.user_id
+                 WHERE tw.ticket_id = ?",
             [$ticketId]
         );
     }
@@ -413,11 +412,11 @@ class DBHandler {
     public function getTicketsByWorker(int $userId): array {
         return $this->fetchAll(
             "SELECT t.*, p.name AS project_name
-             FROM Tickets t
-             JOIN Ticket_Workers tw ON tw.ticket_id = t.id
-             JOIN Projects p ON p.id = t.project_id
-             WHERE tw.user_id = ?
-             ORDER BY t.priority DESC",
+                 FROM Tickets t
+                 JOIN Ticket_Workers tw ON tw.ticket_id = t.id
+                 JOIN Projects p ON p.id = t.project_id
+                 WHERE tw.user_id = ?
+                 ORDER BY t.priority DESC",
             [$userId]
         );
     }
@@ -427,9 +426,9 @@ class DBHandler {
         if ($role === 'Administrator') {
             return $this->fetchAll(
                 "SELECT t.*, p.name AS project_name
-                 FROM Tickets t
-                 JOIN Projects p ON p.id = t.project_id
-                 ORDER BY t.priority DESC"
+                     FROM Tickets t
+                     JOIN Projects p ON p.id = t.project_id
+                     ORDER BY t.priority DESC"
             );
         }
         return $this->getTicketsByWorker($userId);

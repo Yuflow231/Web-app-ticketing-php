@@ -26,43 +26,6 @@
 
     $debugHandler = DebugHandler::getInstance();
 
-    $tableRows =[
-            [
-                    "id" => "101",
-                    "title" => "Customizable UI bars",
-                    "project" => "Skyblocker",
-                    "status" => "In Progress",
-                    "priority" => "Medium",
-                    "type" => "Included",
-                    "clients" => [
-                            "client1" => "../../assets/images/icon.png",
-                    ]
-            ],
-            [
-                    "id" => "102",
-                    "title" => "Fix Render for 1.21.11",
-                    "project" => "Customizable Player Model",
-                    "status" => "On Hold",
-                    "priority" => "High",
-                    "type" => "Billed",
-                    "clients" => [
-                            "client1" => "../../assets/images/icon.png",
-                            "client2" => "../../assets/images/icon.png",
-                    ]
-            ],
-            [
-                    "id" => "105",
-                    "title" => "Implement Dark Mode",
-                    "project" => "Skyblocker",
-                    "status" => "New",
-                    "priority" => "Low",
-                    "type" => "Billed",
-                    "clients" => [
-                            "client1" => "../../assets/images/icon.png",
-                    ]
-            ]
-    ];
-
     $debugHandler->addGetParams();
     $debugHandler->addSeparatorRight();
 ?>
@@ -159,7 +122,7 @@
                         <tr>
                             <td data-label="ID">#<?= $ticket["id"] ?></td>
                             <td data-label="Title"><strong><?= $ticket["name"] ?></strong></td>
-                            <td data-label="Project"><?= $db->getProjectNameByTicketId($ticket["project_id"]) ?></td>
+                            <td data-label="Project"><?= $ticket["project_name"] ?></td>
                             <td data-label="Status"><span class="badge  <?php setBadgeColor($ticket["status"]) ?> "><?= $ticket["status"] ?></span></td>
                             <td data-label="Priority"><span class="badge  <?php setBadgeColor($ticket["priority"]) ?> "><?= $ticket["priority"] ?></span></td>
                             <td data-label="Priority"><span class="badge  <?php setBadgeColor($ticket["type"]) ?> "><?= $ticket["type"] ?></span></td>
