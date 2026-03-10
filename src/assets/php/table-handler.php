@@ -19,8 +19,8 @@
 
         echo $color;
 
-        $debug = DebugHandler::getInstance();
-        $debug->addInfoRight("Badge " . $count. ": ". $tag . " ", $color);
+        // $debug = DebugHandler::getInstance();
+        // $debug->addInfoRight("Badge " . $count. ": ". $tag . " ", $color);
     }
 
     function isSelected(string $paramName, string $tag): void {

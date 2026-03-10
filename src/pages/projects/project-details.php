@@ -122,13 +122,19 @@
             </div>
             <section class="detail-card full-width">
                 <h2>Linked Tickets</h2>
-                <div class="filter">
-                    <label for="type">Type</label>
-                    <select id="type" name="type">
-                        <option value="All" <?php isSelected("type","All") ?> >All</option>
-                        <option value="Included" <?php isSelected("type","Included") ?>>Included</option>
-                        <option value="Billed" <?php isSelected("type","Billed") ?>>Billed</option>
-                    </select>
+                <div class="page-header-line ">
+                    <div class="filter">
+                        <label for="type">Type</label>
+                        <select id="type" name="type">
+                            <option value="All" <?php isSelected("type","All") ?> >All</option>
+                            <option value="Included" <?php isSelected("type","Included") ?>>Included</option>
+                            <option value="Billed" <?php isSelected("type","Billed") ?>>Billed</option>
+                        </select>
+                    </div>
+                    <div class="filter">
+                        <label for="search">Research</label>
+                        <input type="text" id="search" name="search" placeholder="Research a project"">
+                    </div>
                 </div>
                 <div style="margin: var(--spacing-sm) 0;">
                     <button class="btn"><i class="fa-solid fa-angle-left"></i></button>

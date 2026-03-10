@@ -127,6 +127,7 @@
         if(formValidation){
             canPress = false;
 
+            FormVerifier.validateForm("Creating account ...");
             setTimeout(() => {
                 document.getElementById("creation-form").submit();
             }, 1500);

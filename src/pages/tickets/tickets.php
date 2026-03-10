@@ -15,6 +15,23 @@
     $debugHandler = DebugHandler::getInstance();
     $user = $_SESSION['user']; // shorthand for use in the page
 
+    // Handle delete
+    if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['delete_ticket_id'])) {
+        $deleteId = (int) $_POST['delete_ticket_id'];
+        if ($deleteId > 0) {
+            try {
+                $db = DBHandler::getInstance();
+                $db->deleteTicket($deleteId);
+                header("Location: ./tickets.php?toast=ticket_deleted" . $debugHandler->getDebugAppend());
+                exit;
+            } catch (Exception $e) {
+                $fwd = $debugHandler->getDebugForwardParams(['DB Error' => $e->getMessage()]);
+                header("Location: ./tickets.php?toast=db_error" . $debugHandler->getDebugAppend() . $fwd);
+                exit;
+            }
+        }
+    }
+
     // Fetch projects from DB based on role
     try {
         $db       = DBHandler::getInstance();
@@ -27,7 +44,6 @@
     $debugHandler = DebugHandler::getInstance();
 
     $debugHandler->addGetParams();
-    $debugHandler->addSeparatorRight();
 ?>
 
 <!DOCTYPE html>
@@ -136,7 +152,14 @@
                             <td data-label="Actions">
                                 <div style="display: flex; justify-content: space-evenly">
                                     <a href="./ticket-details.php?id=<?= $ticket["id"] ?><?=  $debugHandler->getDebugAppend() ?>" class="icon"><i class="fa-solid fa-arrow-up-right-from-square"></i></a>
-                                    <button class="icon delete-btn" style="color: var(--danger-color);"><i class="fa-solid fa-trash"></i></button>
+
+                                    <form method="POST" style="display:inline;" onsubmit="return confirm('Delete this ticket? This cannot be undone.')">
+                                        <input type="hidden" name="delete_ticket_id" value="<?= $ticket['id'] ?>">
+                                        <button type="submit" class="icon" style="color: var(--danger-color); background: none; border: none; cursor: pointer;">
+                                            <i class="fa-solid fa-trash"></i>
+                                        </button>
+                                    </form>
+
                                 </div>
                             </td>
                         </tr>
@@ -163,8 +186,18 @@
     new TableManager('.tickets table', 5);
     console.log("The current language is", LangHandler.getLanguage());
 
-    document.querySelectorAll('.delete-btn').forEach(btn => {
-        btn.addEventListener('click', () => Toast('Not implemented yet', 'error'));
-    });
+    const toastMessages = {
+        ticket_deleted: { text: "Ticket deleted successfully.", type: "neutral" },
+        db_error:       { text: "A database error occurred.", type: "error" },
+    };
+
+    const params = new URLSearchParams(window.location.search);
+    const toastKey = params.get('toast');
+    if (toastKey && toastMessages[toastKey]) {
+        Toast(toastMessages[toastKey].text, toastMessages[toastKey].type);
+        const cleanUrl = new URL(window.location.href);
+        cleanUrl.searchParams.delete('toast');
+        window.history.replaceState({}, '', cleanUrl);
+    }
 </script>
 </html>

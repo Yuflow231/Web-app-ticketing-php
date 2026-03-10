@@ -87,7 +87,8 @@ class DBHandler {
         string $email,
         string $plainPassword,
         string $role     = 'Guest',
-        string $language = 'en'
+        string $language = 'en',
+        string $pfp = 'icon.png'
     ): int {
         // Guard against values not in the enum
         if (!in_array($role, ['Administrator', 'Guest'])) {
@@ -95,9 +96,9 @@ class DBHandler {
         }
         $hash = password_hash($plainPassword, PASSWORD_BCRYPT);
         return $this->insert(
-            "INSERT INTO Users (first_name, last_name, email, password_hashed, role, join_date, language)
-             VALUES (?, ?, ?, ?, ?, NOW(), ?)",
-            [$firstName, $lastName, $email, $hash, $role, $language]
+            "INSERT INTO Users (first_name, last_name, email, password_hashed, role, join_date, language, profile_pic)
+                 VALUES (?, ?, ?, ?, ?, NOW(), ?, ?)",
+            [$firstName, $lastName, $email, $hash, $role, $language, $pfp]
         );
     }
 
@@ -177,6 +178,23 @@ class DBHandler {
         // Creator is automatically added as Owner in Project_Team
         $this->addProjectMember($projectId, $ownerUserId, 'Owner');
         return $projectId;
+    }
+
+    /** Delete a project and all associated data (tickets, workers, attachments, team) */
+    public function deleteProject(int $projectId): bool {
+        // Get all ticket ids for this project
+        $tickets = $this->fetchAll(
+            "SELECT id FROM Tickets WHERE project_id = ?",
+            [$projectId]
+        );
+        foreach ($tickets as $ticket) {
+            $this->deleteTicket($ticket["id"]);
+            // $this->execute("DELETE FROM Ticket_Worker WHERE ticket_id = ?", [$ticket['id']]);
+            // $this->execute("DELETE FROM Ticket_Attachments WHERE ticket_id = ?", [$ticket['id']]);
+        }
+        // $this->execute("DELETE FROM Tickets WHERE project_id = ?", [$projectId]);
+        $this->execute("DELETE FROM Project_Team WHERE project_id = ?", [$projectId]);
+        return $this->execute("DELETE FROM Projects WHERE id = ?", [$projectId]) > 0;
     }
 
 
@@ -336,6 +354,13 @@ class DBHandler {
              VALUES (?, ?, 'New', ?, 'Included', ?, ?, 0)",
             [$name, $projectId, $priority, $description, $estimatedTime]
         );
+    }
+
+    /** Delete a ticket and all its associated workers and attachments */
+    public function deleteTicket(int $ticketId): bool {
+        $this->execute("DELETE FROM Ticket_Workers WHERE ticket_id = ?", [$ticketId]);
+        $this->execute("DELETE FROM Ticket_Attachments WHERE ticket_id = ?", [$ticketId]);
+        return $this->execute("DELETE FROM Tickets WHERE id = ?", [$ticketId]) > 0;
     }
 
     /** Get a single ticket by id */
