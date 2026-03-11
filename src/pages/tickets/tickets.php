@@ -1,3 +1,51 @@
+<?php
+
+    session_start();
+    // Import debug handler
+    require_once("../../assets/php/debug-handler.php");
+    require_once("../../assets/php/db-handler.php");
+    require_once("../../assets/php/table-handler.php");
+
+    // Guard — kick back to login if not authenticated
+    if (!isset($_SESSION['user'])) {
+        header("Location: ../../../index.php?toast=not_logged_in");
+        exit;
+    }
+
+    $debugHandler = DebugHandler::getInstance();
+    $user = $_SESSION['user']; // shorthand for use in the page
+
+    // Handle delete
+    if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['delete_ticket_id'])) {
+        $deleteId = (int) $_POST['delete_ticket_id'];
+        if ($deleteId > 0) {
+            try {
+                $db = DBHandler::getInstance();
+                $db->deleteTicket($deleteId);
+                header("Location: ./tickets.php?toast=ticket_deleted" . $debugHandler->getDebugAppend());
+                exit;
+            } catch (Exception $e) {
+                $fwd = $debugHandler->getDebugForwardParams(['DB Error' => $e->getMessage()]);
+                header("Location: ./tickets.php?toast=db_error" . $debugHandler->getDebugAppend() . $fwd);
+                exit;
+            }
+        }
+    }
+
+    // Fetch projects from DB based on role
+    try {
+        $db       = DBHandler::getInstance();
+        $tickets = $db->getAllTicketsForUser($user['id'], $user['role']);
+    } catch (Exception $e) {
+        $tickets = [];
+        $debugHandler->addInfoRight("DB Error", $e->getMessage());
+    }
+
+    $debugHandler = DebugHandler::getInstance();
+
+    $debugHandler->addGetParams();
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -17,7 +65,7 @@
         <header class="page-header">
             <div class="page-header-line">
                 <h2>My tickets</h2>
-                <a href="./ticket-creation.php<?= $debug ?>">
+                <a href="./ticket-creation.php<?= $debugHandler->getDebugParam() ?>">
                     <button type="button" class="btn">
                         <i class="fa-solid fa-plus"></i>
                         Create ticket
@@ -27,22 +75,31 @@
             <div class="page-header-line">
                 <div style="display: flex; gap: var(--spacing-lg); flex-wrap: wrap;">
                     <div class="filter">
-                        <label for="priority">Priority</label>
-                        <select id="priority" name="priority">
-                            <option value="">All</option>
-                            <option value="High">High</option>
-                            <option value="Medium">Medium</option>
-                            <option value="Low">Low</option>
+                        <label for="status">Status</label>
+                        <select id="status" name="status">
+                            <option value="All" <?php isSelected("status","All") ?>>All</option>
+                            <option value="New" <?php isSelected("status","New") ?>>New</option>
+                            <option value="In Progress" <?php isSelected("status","In Progress") ?>>In Progress</option>
+                            <option value="On Hold" <?php isSelected("status","On Hold") ?>>On Hold</option>
+                            <option value="Completed" <?php isSelected("status","Completed") ?>>Completed</option>
+                            <option value="Closed" <?php isSelected("status","Closed") ?>>Closed</option>
                         </select>
                     </div>
                     <div class="filter">
-                        <label for="status">Status</label>
-                        <select id="status" name="status">
-                            <option value="">All</option>
-                            <option value="Open">New</option>
-                            <option value="In Progress">In Progress</option>
-                            <option value="On Hold">On Hold</option>
-                            <option value="Closed">Closed</option>
+                        <label for="priority">Priority</label>
+                        <select id="priority" name="priority">
+                            <option value="All" <?php isSelected("priority","All") ?> >All</option>
+                            <option value="High" <?php isSelected("priority","High") ?>>High</option>
+                            <option value="Medium" <?php isSelected("priority","Medium") ?>>Medium</option>
+                            <option value="Low" <?php isSelected("priority","Low") ?>>Low</option>
+                        </select>
+                    </div>
+                    <div class="filter">
+                        <label for="type">Type</label>
+                        <select id="type" name="type">
+                            <option value="All" <?php isSelected("type","All") ?> >All</option>
+                            <option value="Included" <?php isSelected("type","Included") ?>>Included</option>
+                            <option value="Billed" <?php isSelected("type","Billed") ?>>Billed</option>
                         </select>
                     </div>
                 </div>
@@ -61,7 +118,7 @@
         <!-- Tickets Section -->
         <section class="tickets">
             <div class="table-card">
-                <table>
+                <table id="table">
                     <thead>
                     <tr>
                         <th>ID</th>
@@ -69,52 +126,45 @@
                         <th>Project</th>
                         <th>Status</th>
                         <th>Priority</th>
+                        <th>Type</th>
                         <th>Assigned</th>
                         <th>Actions</th>
                     </tr>
                     </thead>
                     <tbody id="tickets-tbody">
                     <!-- Tickets will be loaded here -->
+                    <?php foreach ($tickets as $ticket) : ?>
+                        <?php if (isFiltered($ticket, ['status', 'priority', 'type'])): ?>
                         <tr>
-                            <td data-label="ID">#101</td>
-                            <td data-label="Title"><strong>Customizable UI bars</strong></td>
-                            <td data-label="Project">Skyblocker</td>
-                            <td data-label="Status"><span class="badge green">In Progress</span></td>
-                            <td data-label="Priority"><span class="badge orange">Medium</span></td>
+                            <td data-label="ID">#<?= $ticket["id"] ?></td>
+                            <td data-label="Title"><strong><?= $ticket["name"] ?></strong></td>
+                            <td data-label="Project"><?= $ticket["project_name"] ?></td>
+                            <td data-label="Status"><span class="badge  <?php setBadgeColor($ticket["status"]) ?> "><?= $ticket["status"] ?></span></td>
+                            <td data-label="Priority"><span class="badge  <?php setBadgeColor($ticket["priority"]) ?> "><?= $ticket["priority"] ?></span></td>
+                            <td data-label="Priority"><span class="badge  <?php setBadgeColor($ticket["type"]) ?> "><?= $ticket["type"] ?></span></td>
                             <td data-label="Assigned">
                                 <div class="avatar-line">
-                                    <img src="../../assets/images/icon.png" title="Unassigned" alt="profile-picture" class="profile-pic-mini">
+                                    <?php foreach ($db->getTicketWorkers($ticket["id"]) as $contributor) : ?>
+                                    <img src="../../../src/assets/images/<?= $contributor["profile_pic"] ?>" title="<?= $contributor["first_name"]. ' ' .$contributor["last_name"] ?>" alt="profile_pic" class="profile-pic-mini">
+                                    <?php endforeach; ?>
                                 </div>
                             </td>
-                            <td data-label="Actions"><a href="./ticket-details.php<?= $debug ?>" class="icon"><i class="fa-solid fa-arrow-up-right-from-square"></i></a></td>
-                        </tr>
-                        <tr>
-                            <td data-label="ID">#102</td>
-                            <td data-label="Title"><strong>Fix Render for 1.21.11</strong></td>
-                            <td data-label="Project">Customizable Player Model</td>
-                            <td data-label="Status"><span class="badge orange">On Hold</span></td>
-                            <td data-label="Priority"><span class="badge red">High</span></td>
-                            <td data-label="Assigned">
-                                <div class="avatar-line">
-                                    <img src="../../assets/images/icon.png" title="Unassigned" alt="profile-picture" class="profile-pic-mini">
-                                    <img src="../../assets/images/icon.png" title="Unassigned" alt="profile-picture" class="profile-pic-mini">
+                            <td data-label="Actions">
+                                <div style="display: flex; justify-content: space-evenly">
+                                    <a href="./ticket-details.php?id=<?= $ticket["id"] ?><?=  $debugHandler->getDebugAppend() ?>" class="icon"><i class="fa-solid fa-arrow-up-right-from-square"></i></a>
+
+                                    <form method="POST" style="display:inline;" onsubmit="return confirm('Delete this ticket? This cannot be undone.')">
+                                        <input type="hidden" name="delete_ticket_id" value="<?= $ticket['id'] ?>">
+                                        <button type="submit" class="icon" style="color: var(--danger-color); background: none; border: none; cursor: pointer;">
+                                            <i class="fa-solid fa-trash"></i>
+                                        </button>
+                                    </form>
+
                                 </div>
                             </td>
-                            <td data-label="Actions"><a href="./ticket-details.php<?= $debug ?>" class="icon"><i class="fa-solid fa-arrow-up-right-from-square"></i></a></td>
                         </tr>
-                        <tr>
-                            <td data-label="ID">#105</td>
-                            <td data-label="Title"><strong>Implement Dark Mode</strong></td>
-                            <td data-label="Project">Skyblocker</td>
-                            <td data-label="Status"><span class="badge blue">New</span></td>
-                            <td data-label="Priority"><span class="badge green">Low</span></td>
-                            <td data-label="Assigned">
-                                <div class="avatar-line">
-                                    <img src="../../assets/images/icon.png" title="Unassigned" alt="profile-picture" class="profile-pic-mini">
-                                </div>
-                            </td>
-                            <td data-label="Actions"><a href="./ticket-details.php<?= $debug ?>" class="icon"><i class="fa-solid fa-arrow-up-right-from-square"></i></a></td>
-                        </tr>
+                        <?php endif; ?>
+                    <?php addCount(); endforeach; ?>
                     </tbody>
                 </table>
             </div>
@@ -130,9 +180,24 @@
 </body>
 <script type="module">
     import * as LangHandler from "../../assets/js/language-handler.js";
+    import Toast from '../../assets/js/toast.js';
     import { TableManager } from "../../assets/js/table-handler.js";
     // Initialize for tickets table
     new TableManager('.tickets table', 5);
     console.log("The current language is", LangHandler.getLanguage());
+
+    const toastMessages = {
+        ticket_deleted: { text: "Ticket deleted successfully.", type: "neutral" },
+        db_error:       { text: "A database error occurred.", type: "error" },
+    };
+
+    const params = new URLSearchParams(window.location.search);
+    const toastKey = params.get('toast');
+    if (toastKey && toastMessages[toastKey]) {
+        Toast(toastMessages[toastKey].text, toastMessages[toastKey].type);
+        const cleanUrl = new URL(window.location.href);
+        cleanUrl.searchParams.delete('toast');
+        window.history.replaceState({}, '', cleanUrl);
+    }
 </script>
 </html>

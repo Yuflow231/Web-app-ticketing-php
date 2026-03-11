@@ -1,25 +1,36 @@
 <?php
-    $link = basename($_SERVER['PHP_SELF']);
-    $no = pathinfo($link, PATHINFO_FILENAME);
-    $sub = substr($no,   0, 5);
+    require_once("debug-handler.php");
 
-    $debug = isset($_GET["debug"]) ? "?debug=1" : "";
-    $debugEnabled = isset($_GET["debug"]) ? "true" : "false";
+    $user = $_SESSION['user'];
 
-    if(!is_null($_GET["debug"])){
-        echo("<p class=\"debug-element\"> {$no} </p>");
-        echo("<p class=\"debug-element\" style=\"background-color: transparent; color: red;\"> {$sub} </p>");
-    }
 
-    function laink($refLInk):void{
-        global $sub, $debug; //need to create ref to global
-        $split = basename($refLInk);
-        if(str_contains($split, $sub)){
-            echo("<a href='{$refLInk}{$debug}' class=\"active\">");
-        }
-        else {
-            echo("<a href='{$refLInk}{$debug}'>");
-        }
+    // Initialize debug handler
+    $debugHandler = DebugHandler::getInstance();
+
+    $currentFile = basename($_SERVER['PHP_SELF']);
+    $pageName = pathinfo($currentFile, PATHINFO_FILENAME);
+    $pagePrefix = substr($pageName, 0, 5);
+
+    // Add additional debug info
+
+    $debugHandler->addInfoLeft("Current page",  $pageName);
+    $debugHandler->addInfoLeft("Page's prefix",  $pagePrefix);
+
+    // Get debug parameter for URLs
+    $debug = $debugHandler->getDebugParam();
+
+    /**
+     * Helper function to generate navigation links with proper active state and debug param
+     * @param string $refLink The target URL
+     */
+    function laink(string $refLink): void {
+        global $pagePrefix, $debug;
+
+        $linkBasename = basename($refLink);
+        $isActive = str_contains($linkBasename, $pagePrefix);
+        $activeClass = $isActive ? ' class="active"' : '';
+
+        echo "<a href='{$refLink}{$debug}'{$activeClass}>";
     }
 ?>
 
@@ -31,10 +42,10 @@
         </div>
         <div class="user-profile-header">
             <a href="/Web-app-ticketing-php/src/pages/profile.php<?= $debug ?>" class="user-profile-inline">
-                <span class="username" data-type="first-name">User</span>
-                <span class="username" data-type="last-name">Name</span>
-                <!-- placeholder using my YouTube profile pic -->
-                <img src="https://yt3.ggpht.com/pz97Hxe-gW4DR1-S4HmoZopwKXppAHPajMDtCaSSM-3HNV31wECJmegkZAohyEh7qAbCNQAHUg=s176-c-k-c0x00ffffff-no-rj" alt="User Profile" class="profile-pic" >
+                <span class="username" data-type="first-name"><?= $user["first_name"] ?></span>
+                <span class="username" data-type="last-name"><?= $user["last_name"] ?></span>
+
+                <img src="/Web-app-ticketing-php/src/assets/images/<?= $user["profile_pic"] ?>" alt="User Profile" class="profile-pic" >
             </a>
         </div>
     </header>
@@ -60,7 +71,7 @@
             </a>
         </div>
 
-        <a href="/Web-app-ticketing-php/index.php<?= $debug ?>">
+        <a href="/Web-app-ticketing-php/src/assets/php/logout.php">
             <span class="icon"><i class="fa-solid fa-right-from-bracket"></i></span>
             <span class="text">Logout</span>
         </a>

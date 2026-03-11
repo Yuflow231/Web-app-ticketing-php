@@ -1,3 +1,39 @@
+<?php
+    session_start();
+    require_once("../assets/php/debug-handler.php");
+
+    // Guard — kick back to login if not authenticated
+    if (!isset($_SESSION['user'])) {
+        header("Location: ../../index.php?toast=not_logged_in");
+        exit;
+    }
+
+    $debugHandler = DebugHandler::getInstance();
+    $user = $_SESSION['user']; // shorthand for use in the page
+
+    function isAdmin(string $role):bool
+    {
+        $roleLower = strtolower($role);
+
+        return $roleLower === "administrator";
+    }
+
+    $temp = 0;
+    function isLanguageSet(string $lang, string $compare): void{
+        global  $debugHandler, $temp;
+
+        $debugHandler->addInfoRight("lang".$temp, $lang);
+        $debugHandler->addInfoRight("compare".$temp, $compare);
+        $debugHandler->addInfoRight("lang === compare".$temp, $lang === $compare);
+
+        if ($lang === $compare){
+            echo("selected");
+            $debugHandler->addInfoRight("yup".$temp, "yup");
+        }
+
+        $temp++;
+    }
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -9,6 +45,15 @@
     <script type="module" src="../../src/assets/js/side-bar.js"></script>
 </head>
 <body>
+    <?php
+        // Import debug handler
+        require_once("../assets/php/debug-handler.php");
+        $debugHandler = DebugHandler::getInstance();
+
+        // Add page-specific debug info
+        $debugHandler->addInfoRight('Test', 'Additional ');
+    ?>
+
     <!-- Navigation Bar -->
     <?php require_once("../assets/php/side-nav-component.php"); ?>
 
@@ -22,26 +67,23 @@
             <section class="detail-card">
                 <header class="profile-header">
                     <div class="name-group">
-                        <div class="username" data-type="first-name">User</div>
-                        <div class="username" data-type="last-name">Name</div>
-                        <p class="user-role">Administrator</p>
+                        <div class="username" data-type="first-name"><?= $user["first_name"] ?></div>
+                        <div class="username" data-type="last-name"><?= $user["last_name"] ?></div>
+                        <p class="user-role"><?= $user["role"] ?></p>
                     </div>
-                    <!-- placeholder using my YouTube profile pic -->
-                    <img src="https://yt3.ggpht.com/pz97Hxe-gW4DR1-S4HmoZopwKXppAHPajMDtCaSSM-3HNV31wECJmegkZAohyEh7qAbCNQAHUg=s176-c-k-c0x00ffffff-no-rj" alt="User Profile" class="profile-pic" >
+
+
+                    <img src="../../src/assets/images/<?= $user["profile_pic"] ?>" alt="User Profile" class="profile-pic" >
                 </header>
 
                 <div>
                     <div class="detail-item">
                         <label>Email Address</label>
-                        <p>yuflow.uwu@example.com</p>
+                        <p><?= $user["email"] ?></p>
                     </div>
                     <div class="detail-item">
                         <label>Member Since</label>
-                        <p>January 20, 2024</p>
-                    </div>
-                    <div class="detail-item">
-                        <label>Location</label>
-                        <p>New York, USA</p>
+                        <p><?= $user["join_date"] ?></p>
                     </div>
                     <div>
                         <button type="button" class="btn">Edit</button>
@@ -55,14 +97,16 @@
                     <div class="form-item" style="width: 10rem;">
                         <label for="language-select">Language</label>
                         <select id="language-select">
-                            <option value="en">English</option>
-                            <option value="fr">French</option>
+                            <option value="en" <?php isLanguageSet($user["language"], "en") ?>>English</option>
+                            <option value="fr" <?php isLanguageSet($user["language"], "fr") ?>>French</option>
                         </select>
                     </div>
+                    <?php if(isAdmin($user["role"])): ?>
                     <div class="form-item-stacked">
-                        <label for="debug">Debug mod</label>
+                        <label for="debug">Debug mode</label>
                         <input type="checkbox" id="debug">
                     </div>
+                    <?php endif; ?>
                 </section>
 
                 <section class="detail-card">
@@ -70,7 +114,7 @@
                     <div class="detail-item">
                         <label>Password</label>
                         <p style="margin-bottom: 1rem;">••••••••••••</p>
-                        <a href="./reset-password.php" class="password" style="">Change Password</a>
+                        <a href="./reset-password.php<?= $debugHandler->getDebugParam() ?>" class="password" style="">Change Password</a>
                     </div>
                 </section>
             </div>
@@ -84,28 +128,10 @@
     const languageSelect = document.getElementById("language-select");
     const debugCheck = document.getElementById("debug");
 
-    // Fonction pour ajouter le paramètre debug aux liens
-    function updateLinksWithDebug() {
-        const debugEnabled = localStorage.getItem("debug") === "true";
-
-        if (debugEnabled) {
-            // Sélectionner tous les liens de navigation
-            const links = document.querySelectorAll('.side-nav a[href]');
-
-            links.forEach(link => {
-                const url = new URL(link.href);
-                url.searchParams.set('debug', '1');
-                link.href = url.toString();
-            });
-        }
-    }
-
     window.addEventListener("DOMContentLoaded", () => {
         languageSelect.value = LangHandler.getLanguage();
-        updateLinksWithDebug();
 
-
-        debugCheck.checked = localStorage.getItem("debug") === "true";
+        debugCheck.checked = (<?= json_encode($debugHandler->isEnabled()) ?>) === true;
     });
 
     languageSelect.addEventListener("change", function() {
@@ -115,7 +141,6 @@
 
     debugCheck.addEventListener("change", function() {
         const debugEnabled = debugCheck.checked;
-        localStorage.setItem("debug", debugEnabled);
 
         // Reload the page with or without the parameter
         const currentUrl = new URL(window.location.href);

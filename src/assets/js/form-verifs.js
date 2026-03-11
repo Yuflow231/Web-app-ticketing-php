@@ -2,7 +2,7 @@
 Thanks to Victor BRANCHU for the logic used within this file
  */
 
-import Toast from "/src/assets/js/toast.js";
+import Toast from "./toast.js";
 
 // regex to check mail validity
 const regexMail = "^[^\\s@]+@[^\\s@]+\\.[^\\s@]+$"
@@ -72,6 +72,14 @@ export function verifyEmptyness(error) {
     }
 }
 
+export function verifyLength(error) {
+    return{
+        predicate : (input) => input.value.length < 10,
+        message : error,
+    }
+}
+
+
 export function verifyFile(error) {
     return{
         predicate : (input) => input.childElementCount < 1,
@@ -115,6 +123,8 @@ export function verifyDateDiff(error) {
  * @param message success message to show
  * @param ref link to the next page (optional)
  */
+
+// note, this one should not be called when doing something DB related
 export function validateForm(message, ref) {
     Toast(message, "success");
 

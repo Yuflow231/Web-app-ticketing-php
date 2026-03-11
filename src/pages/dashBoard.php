@@ -1,3 +1,17 @@
+<?php
+    session_start();
+    require_once("../assets/php/debug-handler.php");
+
+    // Guard — kick back to login if not authenticated
+    if (!isset($_SESSION['user'])) {
+        header("Location: ../../index.php?toast=not_logged_in");
+        exit;
+    }
+
+    $debugHandler = DebugHandler::getInstance();
+    $user = $_SESSION['user']; // shorthand for use in the page
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -106,7 +120,7 @@
                                 <img src="../assets/images/icon.png" title="Unassigned" alt="profile-picture" class="profile-pic-mini">
                             </div>
                         </td>
-                        <td data-label="Actions"><a href="./tickets/ticket-details.php<?= $debug ?>" class="icon"><i class="fa-solid fa-arrow-up-right-from-square"></i></a></td>
+                        <td data-label="Actions"><a href="./tickets/ticket-details.php?id=1<?= $debugHandler->getDebugAppend() ?>" class="icon"><i class="fa-solid fa-arrow-up-right-from-square"></i></a></td>
                     </tr>
                     <tr>
                         <td data-label="ID">#105</td>
@@ -120,7 +134,7 @@
                                 <img src="../assets/images/icon.png" title="Unassigned" alt="profile-picture" class="profile-pic-mini">
                             </div>
                         </td>
-                        <td data-label="Actions"><a href="./tickets/ticket-details.php<?= $debug ?>" class="icon"><i class="fa-solid fa-arrow-up-right-from-square"></i></a></td>
+                        <td data-label="Actions"><a href="./tickets/ticket-details.php?id=3<?= $debugHandler->getDebugAppend() ?>" class="icon"><i class="fa-solid fa-arrow-up-right-from-square"></i></a></td>
                     </tr>
                     </tbody>
                 </table>
@@ -128,4 +142,22 @@
         </section>
     </main>
 </body>
+<script type="module">
+    import Toast from "../assets/js/toast.js";
+
+    const toastMessages = {
+        login_success: { text: "Welcome back, <?= htmlspecialchars($user['first_name']) ?> !", type: "success" },
+    };
+
+    const params   = new URLSearchParams(window.location.search);
+    const toastKey = params.get('toast');
+
+    if (toastKey && toastMessages[toastKey]) {
+        const { text, type } = toastMessages[toastKey];
+        Toast(text, type);
+        const cleanUrl = new URL(window.location.href);
+        cleanUrl.searchParams.delete('toast');
+        window.history.replaceState({}, '', cleanUrl);
+    }
+</script>
 </html>

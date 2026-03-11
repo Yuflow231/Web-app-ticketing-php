@@ -1,3 +1,30 @@
+<?php
+
+    session_start();
+
+    require_once("../../assets/php/table-handler.php");
+    require_once("../../assets/php/db-handler.php");
+    require_once("../../assets/php/debug-handler.php");
+
+    // Guard — kick back to login if not authenticated
+    if (!isset($_SESSION['user'])) {
+        header("Location: ../../../index.php?toast=not_logged_in");
+        exit;
+    }
+
+    $debugHandler = DebugHandler::getInstance();
+    $user = $_SESSION['user']; // shorthand for use in the page
+
+    $ticket_id = $_GET["id"];
+    // Fetch projects from DB based on role
+    try {
+        $db       = DBHandler::getInstance();
+        $ticket = $db->getTicketById($ticket_id);
+    } catch (Exception $e) {
+        $ticket = [];
+        $debugHandler->addInfoRight("DB Error", $e->getMessage());
+    }
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -15,41 +42,39 @@
     <!-- Page content -->
     <main class="main-content">
         <header class="page-header">
-            <h1>Ticket #101: Customizable UI bars</h1>
+            <h1>Ticket #<?= $ticket["id"] ?>: <?= $ticket["name"] ?></h1>
         </header>
-
-        <div class="ticket-lifecycle-container">
-            <div class="lifecycle-step achieved">New</div>
-            <div class="lifecycle-step achieved">To be Approved</div>
-            <div class="lifecycle-step current">In Progress</div>
-            <div class="lifecycle-step">Completed</div>
-        </div>
 
         <div class="detail-container">
             <section class="detail-card">
                 <div class="detail-item">
                     <label>Title</label>
-                    <h2>Customizable UI bars</h2>
+                    <h2><?= $ticket["name"] ?></h2>
+                </div>
+
+                <div class="detail-item" >
+                    <label>Associated project</label>
+                    <p><?= $ticket["project_name"] ?></p>
                 </div>
 
                 <div class="detail-item" >
                     <label>Detailed Description</label>
-                    <p>Create modulable and customizable bars to replace the default bars of Hypixel Skyblock</p>
+                    <p><?= $ticket["description"] ?></p>
                 </div>
 
                 <div class="inline-elements">
                     <div class="detail-item">
                         <label>Actual Time Spent</label>
-                        <p>4.5 Hours</p>
+                        <p><?= $ticket["spent_time"] ?></p>
                     </div>
                     <div class="detail-item">
                         <label>Estimated Time</label>
-                        <p>8.0 Hours</p>
+                        <p><?= $ticket["estimated_time"] ?></p>
                     </div>
                 </div>
 
                 <div class="inline-elements" style="margin-top: auto; padding-top: 1rem;">
-                    <button class="btn">Update Ticket</button>
+                    <button class="btn">Edit Ticket</button>
                     <button class="btn btn--danger">Close Ticket</button>
                 </div>
             </section>
@@ -59,31 +84,33 @@
                     <h2>Classification</h2>
                     <div class="detail-item">
                         <label>Status</label>
-                        <span class="badge green">In Progress</span>
+                        <span class="badge <?php setBadgeColor($ticket["status"]) ?>"><?= $ticket["status"] ?></span>
                     </div>
                     <div class="detail-item">
                         <label>Priority</label>
-                        <span class="badge orange">Medium</span>
+                        <span class="badge <?php setBadgeColor($ticket["priority"]) ?>"><?= $ticket["priority"] ?></span>
                     </div>
                     <div class="detail-item">
                         <label>Type</label>
-                        <span>Included</span>
+                        <span class="badge <?php setBadgeColor($ticket["type"]) ?>"><?= $ticket["type"] ?></span>
                     </div>
                 </section>
 
                 <section class="detail-card">
                     <h2>Assigned Collaborators</h2>
                     <div id="collaborator-list">
+                        <?php foreach ($db->getTicketWorkers($ticket["id"]) as $contributor): ?>
                         <div class="user-profile-inline" style="margin-bottom: var(--spacing-sm);">
-                            <img src="/src/assets/images/icon.png" alt="User Profile" class="profile-pic" >
+                            <img src="../../../src/assets/images/<?= $contributor["profile_pic"] ?> ?>" alt="User Profile" class="profile-pic" >
                             <div class="item-stacked" style="margin-left: var(--spacing-sm);">
                                 <div>
-                                    <span class="username" data-type="first-name">VicIsACat</span>
-                                    <span class="username" data-type="last-name"></span>
+                                    <span class="username" data-type="first-name"><?= $contributor["first_name"] ?></span>
+                                    <span class="username" data-type="last-name"><?= $contributor["last_name"] ?></span>
                                 </div>
-                                <span class="user-role">Cat</span>
+                                <span class="user-role"><?= $contributor["role"] ?></span>
                             </div>
                         </div>
+                        <?php endforeach; ?>
                     </div>
                 </section>
             </div>
@@ -99,4 +126,22 @@
         </div>
     </main>
 </body>
+<script type="module">
+    import Toast from "../../assets/js/toast.js";
+
+    const toastMessages = {
+        ticket_created: { text: "Ticket created successfully !", type: "success" },
+    };
+
+    const params   = new URLSearchParams(window.location.search);
+    const toastKey = params.get('toast');
+
+    if (toastKey && toastMessages[toastKey]) {
+        const { text, type } = toastMessages[toastKey];
+        Toast(text, type);
+        const cleanUrl = new URL(window.location.href);
+        cleanUrl.searchParams.delete('toast');
+        window.history.replaceState({}, '', cleanUrl);
+    }
+</script>
 </html>
